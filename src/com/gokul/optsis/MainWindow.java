@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.gokul.optsis.dialog;
+package com.gokul.optsis;
 
 import java.awt.Color;
 import java.awt.Dimension;
