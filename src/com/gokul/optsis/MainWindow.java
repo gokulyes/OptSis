@@ -6,6 +6,8 @@
 
 package com.gokul.optsis;
 
+import com.gokul.optsis.dialog.AddNew;
+import com.gokul.optsis.dialog.StrategyListDialog;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.ImageIcon;
@@ -20,13 +22,19 @@ import javax.swing.SwingUtilities;
 public class MainWindow extends javax.swing.JFrame {
     
     private boolean menuShow = true;
+    private String strStgName = "Current Strategy: ";
+    
 
     /** Creates new form MainWindow */
     public MainWindow() {
         initComponents();
     }
     
-    
+    public void selectStrategy(String strName) {
+        strStgName = strName;
+        lblCurrentStgName.setText("Current Strategy: " + strStgName + "   ");
+              
+    }
     public void changeIcon(JLabel lblImage, String path) {
 
         lblImage.setIcon(new ImageIcon(getClass().getResource(path)));
@@ -69,6 +77,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         pnlMainHeader = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
+        lblCurrentStgName = new javax.swing.JLabel();
         pnlMainMenu = new javax.swing.JPanel();
         pnlMenuIcon = new javax.swing.JPanel();
         pnlLineList = new javax.swing.JPanel();
@@ -97,11 +106,12 @@ public class MainWindow extends javax.swing.JFrame {
         lblTitle.setText("OptSis");
         lblTitle.setPreferredSize(new java.awt.Dimension(200, 17));
         pnlMainHeader.add(lblTitle, java.awt.BorderLayout.LINE_START);
+        pnlMainHeader.add(lblCurrentStgName, java.awt.BorderLayout.LINE_END);
 
         getContentPane().add(pnlMainHeader, java.awt.BorderLayout.PAGE_START);
 
         pnlMainMenu.setBackground(new java.awt.Color(129, 152, 48));
-        pnlMainMenu.setPreferredSize(new java.awt.Dimension(50, 450));
+        pnlMainMenu.setPreferredSize(new java.awt.Dimension(270, 450));
         pnlMainMenu.setLayout(new java.awt.BorderLayout());
 
         pnlMenuIcon.setBackground(new java.awt.Color(129, 152, 48));
@@ -259,7 +269,7 @@ public class MainWindow extends javax.swing.JFrame {
         pnlHome.setLayout(pnlHomeLayout);
         pnlHomeLayout.setHorizontalGroup(
             pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 750, Short.MAX_VALUE)
+            .addGap(0, 530, Short.MAX_VALUE)
         );
         pnlHomeLayout.setVerticalGroup(
             pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -274,7 +284,7 @@ public class MainWindow extends javax.swing.JFrame {
         pnlSelect.setLayout(pnlSelectLayout);
         pnlSelectLayout.setHorizontalGroup(
             pnlSelectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 750, Short.MAX_VALUE)
+            .addGap(0, 530, Short.MAX_VALUE)
         );
         pnlSelectLayout.setVerticalGroup(
             pnlSelectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -287,7 +297,7 @@ public class MainWindow extends javax.swing.JFrame {
         pnlShow.setLayout(pnlShowLayout);
         pnlShowLayout.setHorizontalGroup(
             pnlShowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 750, Short.MAX_VALUE)
+            .addGap(0, 530, Short.MAX_VALUE)
         );
         pnlShowLayout.setVerticalGroup(
             pnlShowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -347,6 +357,9 @@ public class MainWindow extends javax.swing.JFrame {
         pnlMainDashboard.add(pnlSelect);
         
         showHideMenu(pnlMainMenu,  Boolean.FALSE);
+        StrategyListDialog stgListDiag = new StrategyListDialog(this, true, this);
+        stgListDiag.setLocationRelativeTo(null);
+        stgListDiag.setVisible(true);       
     }//GEN-LAST:event_btnSelectMouseClicked
 
     private void btnAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMouseClicked
@@ -407,6 +420,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnHome;
     private javax.swing.JButton btnSelect;
     private javax.swing.JButton btnShow;
+    private javax.swing.JLabel lblCurrentStgName;
     private javax.swing.JLabel lblIconList;
     private javax.swing.JLabel lblIconSettings;
     private javax.swing.JLabel lblTitle;

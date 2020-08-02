@@ -3,13 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gokul.optsis;
+package com.gokul.optsis.dialog;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Gokul WPC
  */
 public class AddNew extends javax.swing.JDialog {
+    
+     private Connection connection = null;
 
     /**
      * Creates new form AddNew
@@ -44,10 +53,10 @@ public class AddNew extends javax.swing.JDialog {
         jLabel7 = new javax.swing.JLabel();
         txtStgSymbol = new javax.swing.JTextField();
         dtpStgExpiry = new com.toedter.calendar.JDateChooser();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
+        rdbtnCall = new javax.swing.JRadioButton();
+        rdbtnPut = new javax.swing.JRadioButton();
+        rdbtnLong = new javax.swing.JRadioButton();
+        rdbtnShort = new javax.swing.JRadioButton();
         btnAdd = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
@@ -93,6 +102,12 @@ public class AddNew extends javax.swing.JDialog {
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setText("Position");
         pnlMain.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 160, -1, -1));
+
+        txtStgPrice.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtStgPriceFocusGained(evt);
+            }
+        });
         pnlMain.add(txtStgPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 190, 150, -1));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -107,23 +122,23 @@ public class AddNew extends javax.swing.JDialog {
         pnlMain.add(txtStgSymbol, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 220, 150, -1));
         pnlMain.add(dtpStgExpiry, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 70, 150, -1));
 
-        btnGrpType.add(jRadioButton1);
-        jRadioButton1.setSelected(true);
-        jRadioButton1.setText("Call");
-        pnlMain.add(jRadioButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 100, -1, -1));
+        btnGrpType.add(rdbtnCall);
+        rdbtnCall.setSelected(true);
+        rdbtnCall.setText("Call");
+        pnlMain.add(rdbtnCall, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 100, -1, -1));
 
-        btnGrpType.add(jRadioButton2);
-        jRadioButton2.setText("Put");
-        pnlMain.add(jRadioButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 100, -1, -1));
+        btnGrpType.add(rdbtnPut);
+        rdbtnPut.setText("Put");
+        pnlMain.add(rdbtnPut, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 100, -1, -1));
 
-        btnGrpPosition.add(jRadioButton3);
-        jRadioButton3.setSelected(true);
-        jRadioButton3.setText("Long");
-        pnlMain.add(jRadioButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 160, -1, -1));
+        btnGrpPosition.add(rdbtnLong);
+        rdbtnLong.setSelected(true);
+        rdbtnLong.setText("Long");
+        pnlMain.add(rdbtnLong, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 160, -1, -1));
 
-        btnGrpPosition.add(jRadioButton4);
-        jRadioButton4.setText("Short");
-        pnlMain.add(jRadioButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 160, -1, -1));
+        btnGrpPosition.add(rdbtnShort);
+        rdbtnShort.setText("Short");
+        pnlMain.add(rdbtnShort, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 160, -1, -1));
 
         btnAdd.setText("Add");
         btnAdd.setPreferredSize(new java.awt.Dimension(100, 25));
@@ -165,12 +180,83 @@ public class AddNew extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMouseClicked
-        System.out.print("Clicked");
+       
+        PreparedStatement stmt = null;
+        int nColumnCnt = 4; //
+
+        String insert_into_strategy = "insert into STRATEGY (name, symbol, position, price, covered, coverprice)values ( ?, ?, ?, ?, false, 0)";
+
+        try {
+                Class.forName("org.h2.Driver");
+                connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
+                stmt = connection.prepareStatement(insert_into_strategy);
+                stmt.setString(1, txtStgName.getText());
+                stmt.setString(2, txtStgSymbol.getText());
+                stmt.setBoolean( 3, rdbtnLong.isSelected());
+
+
+                stmt.setInt( 4, Integer.parseInt(txtStgPrice.getText()));
+
+                if (stmt.executeUpdate() > 0) {
+                        JOptionPane.showMessageDialog(null, "New Strategy name inserted into table");
+                        Object rowData[] = new Object[nColumnCnt] ;
+                        rowData[0] = txtStgName.getText();
+                        rowData[1] = txtStgSymbol.getText();
+                        rowData[2] = rdbtnLong.isSelected();
+                        rowData[3] =Integer.parseInt(txtStgPrice.getText());
+
+                        System.out.print(rowData.toString());
+
+                }
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+//            System.out.println("SQLState: " + ex.);
+//            System.out.println("VendorError: " + ex.getErrorCode());
+            ex.printStackTrace();
+        } 
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+//
+//            if (rs != null) {
+//                try {
+//                    rs.close();
+//                } catch (SQLException sqlEx) { } // ignore
+//
+//                rs = null;
+//            }
+
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) { } // ignore
+
+                stmt = null;
+            }
+        }
+        
+			
     }//GEN-LAST:event_btnAddMouseClicked
 
     private void btnCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCloseMouseClicked
        dispose();
     }//GEN-LAST:event_btnCloseMouseClicked
+
+    private void txtStgPriceFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtStgPriceFocusGained
+      		        SimpleDateFormat sdf = new SimpleDateFormat("yyddMMM");
+		        String date = sdf.format(dtpStgExpiry.getDate());
+		        date = "NIFTY" + date.toUpperCase() + txtStgStrike.getText();
+		        if( rdbtnCall.isSelected()) {
+		        	date = date + "CE";
+		        } else {
+		        	date = date + "PE";
+		        }
+
+		        txtStgSymbol.setText(date);
+    }//GEN-LAST:event_txtStgPriceFocusGained
 
     /**
      * @param args the command line arguments
@@ -228,12 +314,12 @@ public class AddNew extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
     private javax.swing.JPanel pnlHeader;
     private javax.swing.JPanel pnlMain;
+    private javax.swing.JRadioButton rdbtnCall;
+    private javax.swing.JRadioButton rdbtnLong;
+    private javax.swing.JRadioButton rdbtnPut;
+    private javax.swing.JRadioButton rdbtnShort;
     private javax.swing.JTextField txtStgName;
     private javax.swing.JTextField txtStgPrice;
     private javax.swing.JTextField txtStgStrike;
