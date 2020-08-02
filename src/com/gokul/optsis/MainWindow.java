@@ -8,12 +8,18 @@ package com.gokul.optsis;
 
 import com.gokul.optsis.dialog.AddNew;
 import com.gokul.optsis.dialog.StrategyListDialog;
+
 import java.awt.Color;
 import java.awt.Dimension;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
 
 /**
  *
@@ -23,12 +29,14 @@ public class MainWindow extends javax.swing.JFrame {
     
     private boolean menuShow = true;
     private String strStgName = "Current Strategy: ";
+
     
 
     /** Creates new form MainWindow */
     public MainWindow() {
         initComponents();
     }
+    
     
     public void selectStrategy(String strName) {
         strStgName = strName;
@@ -97,6 +105,7 @@ public class MainWindow extends javax.swing.JFrame {
         pnlShow = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1600, 765));
 
         pnlMainHeader.setBackground(new java.awt.Color(129, 152, 48));
         pnlMainHeader.setPreferredSize(new java.awt.Dimension(800, 50));
@@ -269,11 +278,11 @@ public class MainWindow extends javax.swing.JFrame {
         pnlHome.setLayout(pnlHomeLayout);
         pnlHomeLayout.setHorizontalGroup(
             pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 530, Short.MAX_VALUE)
+            .addGap(0, 1146, Short.MAX_VALUE)
         );
         pnlHomeLayout.setVerticalGroup(
             pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 450, Short.MAX_VALUE)
+            .addGap(0, 715, Short.MAX_VALUE)
         );
 
         pnlMainDashboard.add(pnlHome, "card2");
@@ -284,26 +293,16 @@ public class MainWindow extends javax.swing.JFrame {
         pnlSelect.setLayout(pnlSelectLayout);
         pnlSelectLayout.setHorizontalGroup(
             pnlSelectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 530, Short.MAX_VALUE)
+            .addGap(0, 1146, Short.MAX_VALUE)
         );
         pnlSelectLayout.setVerticalGroup(
             pnlSelectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 450, Short.MAX_VALUE)
+            .addGap(0, 715, Short.MAX_VALUE)
         );
 
         pnlMainDashboard.add(pnlSelect, "card3");
 
-        javax.swing.GroupLayout pnlShowLayout = new javax.swing.GroupLayout(pnlShow);
-        pnlShow.setLayout(pnlShowLayout);
-        pnlShowLayout.setHorizontalGroup(
-            pnlShowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 530, Short.MAX_VALUE)
-        );
-        pnlShowLayout.setVerticalGroup(
-            pnlShowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 450, Short.MAX_VALUE)
-        );
-
+        pnlShow.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         pnlMainDashboard.add(pnlShow, "card4");
 
         getContentPane().add(pnlMainDashboard, java.awt.BorderLayout.CENTER);
@@ -375,7 +374,9 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void btnShowMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnShowMouseClicked
         pnlMainDashboard.removeAll();
-        pnlMainDashboard.add(pnlShow);
+//        pnlMainDashboard.add(pnlShow);
+        StrgShowPanel stgyShowPanel = new StrgShowPanel(strStgName);
+        pnlMainDashboard.add(stgyShowPanel);
         
         showHideMenu(pnlMainMenu,  Boolean.FALSE);      // TODO add your handling code here:
     }//GEN-LAST:event_btnShowMouseClicked
