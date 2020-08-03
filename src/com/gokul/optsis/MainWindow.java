@@ -8,6 +8,9 @@ package com.gokul.optsis;
 
 import com.gokul.optsis.dialog.AddNew;
 import com.gokul.optsis.dialog.StrategyListDialog;
+import com.gokul.optsis.model.OptionLeg;
+import com.gokul.optsis.model.OptionStrategy;
+import com.gokul.optsis.util.Util;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -29,6 +32,8 @@ public class MainWindow extends javax.swing.JFrame {
     
     private boolean menuShow = true;
     private String strStgName = "Current Strategy: Not Selected  ";
+    private String strStgPL = "Current P/L        :";
+    private OptionStrategy objOptionStrategy;
 
     
 
@@ -37,10 +42,17 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
     }
     
+    public void setCurrentStrategy(OptionStrategy obj) {
+        this.objOptionStrategy = obj;
+    }
     
     public void selectStrategy(String strName) {
         strStgName = strName;
+        this.objOptionStrategy = Util.getOptionStrategyData(strStgName);
+        
         lblCurrentStgName.setText("Current Strategy: " + strStgName + "   ");
+        lblCurrentStgPL.setText("Current P/L        : " + objOptionStrategy.getPL());
+        
               
     }
     public void changeIcon(JLabel lblImage, String path) {
@@ -85,7 +97,9 @@ public class MainWindow extends javax.swing.JFrame {
 
         pnlMainHeader = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
         lblCurrentStgName = new javax.swing.JLabel();
+        lblCurrentStgPL = new javax.swing.JLabel();
         pnlMainMenu = new javax.swing.JPanel();
         pnlMenuIcon = new javax.swing.JPanel();
         pnlLineList = new javax.swing.JPanel();
@@ -115,8 +129,37 @@ public class MainWindow extends javax.swing.JFrame {
         lblTitle.setPreferredSize(new java.awt.Dimension(200, 17));
         pnlMainHeader.add(lblTitle, java.awt.BorderLayout.LINE_START);
 
+        jPanel1.setBackground(new java.awt.Color(129, 152, 48));
+        jPanel1.setPreferredSize(new java.awt.Dimension(200, 50));
+
+        lblCurrentStgName.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         lblCurrentStgName.setText("Current Strategy: Not Selected");
-        pnlMainHeader.add(lblCurrentStgName, java.awt.BorderLayout.LINE_END);
+
+        lblCurrentStgPL.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblCurrentStgPL.setText("Current P/L         :");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblCurrentStgName, javax.swing.GroupLayout.PREFERRED_SIZE, 1066, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblCurrentStgPL))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblCurrentStgName)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblCurrentStgPL)
+                .addContainerGap())
+        );
+
+        pnlMainHeader.add(jPanel1, java.awt.BorderLayout.LINE_END);
 
         getContentPane().add(pnlMainHeader, java.awt.BorderLayout.PAGE_START);
 
@@ -376,7 +419,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void btnShowMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnShowMouseClicked
         pnlMainDashboard.removeAll();
 //        pnlMainDashboard.add(pnlShow);
-        StrgShowPanel stgyShowPanel = new StrgShowPanel(strStgName);
+        StrgShowPanel stgyShowPanel = new StrgShowPanel(objOptionStrategy);
         pnlMainDashboard.add(stgyShowPanel);
         
         showHideMenu(pnlMainMenu,  Boolean.FALSE);      // TODO add your handling code here:
@@ -422,7 +465,9 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnHome;
     private javax.swing.JButton btnSelect;
     private javax.swing.JButton btnShow;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblCurrentStgName;
+    private javax.swing.JLabel lblCurrentStgPL;
     private javax.swing.JLabel lblIconList;
     private javax.swing.JLabel lblIconSettings;
     private javax.swing.JLabel lblTitle;

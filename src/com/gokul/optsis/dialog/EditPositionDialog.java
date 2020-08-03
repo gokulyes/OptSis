@@ -65,7 +65,7 @@ public class EditPositionDialog extends javax.swing.JDialog {
                         } else {
                             rdbtnShort.setSelected(true);
                         }
-                        txtPrice.setText(Integer.toString(objOptionLeg.getnPrice()));
+                        txtPrice.setText(Integer.toString(objOptionLeg.getPrice()));
                         if(objOptionLeg.getPostionCover()){
                             chkCovered.setSelected(true);
                         } else {

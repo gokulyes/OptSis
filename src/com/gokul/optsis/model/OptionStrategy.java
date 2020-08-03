@@ -12,8 +12,8 @@ public class OptionStrategy {
 
 
 	private String strName;
+        private int iPL;
 	private List<OptionLeg> listOptLeg = new ArrayList<>();	
-//	private List<Integer> listOLPayOff = new ArrayList<>();
 	
 	public OptionStrategy() {
 
@@ -74,6 +74,21 @@ public class OptionStrategy {
 		return listOLPayOff;		
 
 	}
+        
+        public int getPL() {
+            int iPL = 0;
+            for (OptionLeg objOptionLeg : listOptLeg) { // For each OptionLeg in the list
+                if(objOptionLeg.getPostionCover()) {
+                    if(objOptionLeg.getPosition()) {
+                        iPL +=  (objOptionLeg.getPostionCoverPrice() - objOptionLeg.getPrice());
+                    } else {
+                        iPL +=  (objOptionLeg.getPrice() - objOptionLeg.getPostionCoverPrice());
+                    }
+                }
+            }
+            return iPL;
+            
+        }
 
 	
 	@Override

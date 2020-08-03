@@ -36,88 +36,106 @@ public class StrgShowPanel extends javax.swing.JPanel {
     private Connection connection ;
     private MainWindow mainWindow;   
     private StrategyTableModel strategyTableModel = new StrategyTableModel();
+    private OptionStrategy objOptionStrategy = new OptionStrategy();
     
     /**
      * Creates new form StgyShowPanel
      */
-    public StrgShowPanel(String stgName) {
+    public StrgShowPanel(OptionStrategy obj) {
         initComponents();
         
+        this.objOptionStrategy = obj;
+        
         initPnlShow();
-        showStgShowTableData(stgName);
-        showChart(stgName);
+//        getOptionStrategyData(stgName);
+//        showStgShowTableData(stgName);
+//        showChart(stgName);
+        showStgShowTableData();
+        showChart();
     }
     
     public void initPnlShow() {
         strategyTableModel = (StrategyTableModel) tblStgShow.getModel();
     }
-    
-    
-    public void showChart (String strStgName) {
-
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        int nColumnCnt = 1; //
-        String strStrategyName = "";
-        String strSQL =  "Select * from STRATEGY where name ='" + strStgName + "'";
-        OptionStrategy objOptionStrategy = new OptionStrategy();
-        
-         try {
-                Class.forName("org.h2.Driver");
-                connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
-                stmt = connection.prepareStatement(strSQL);
-                rs = stmt.executeQuery();
-                
-                System.out.print( "\n" + "strSQL: " + strSQL); 
-                
-                if(rs != null) {
-
-                    Object rowData[] = new Object[nColumnCnt] ;
-
-                    while(rs.next()) {
-
-                        objOptionStrategy.setStrName(rs.getString(2));
-                        objOptionStrategy.setOptLeg(new OptionLeg(rs.getInt(1), rs.getNString(2), rs.getString(3), rs.getBoolean(4), rs.getInt(5)));  
-
-
-                    }
-
-                }
-
-        } catch (ClassNotFoundException | SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
-//            System.out.println("SQLState: " + ex.);
-//            System.out.println("VendorError: " + ex.getErrorCode());
-            ex.printStackTrace();
-        } 
-        finally {
-            // it is a good idea to release
-            // resources in a finally{} block
-            // in reverse-order of their creation
-            // if they are no-longer needed
+//    
+//    public void getOptionStrategyData(String strStgName) {
+//      PreparedStatement stmt = null;
+//        ResultSet rs = null;
+//        String strSQL =  "Select * from STRATEGY where name ='" + strStgName + "'";
+//        objOptionStrategy = new OptionStrategy();
+//        OptionLeg objOptionLeg;
+//        
+//         try {
+//                Class.forName("org.h2.Driver");
+//                connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
+//                stmt = connection.prepareStatement(strSQL);
+//                rs = stmt.executeQuery();
+//                
+//                System.out.print( "\n" + "strSQL: " + strSQL); 
+//                
+//                if(rs != null) {
+//                    objOptionStrategy.setStrName(strStgName);
+//                    while(rs.next()) {
+//                        objOptionLeg = new OptionLeg();
+//                        objOptionLeg.setID(rs.getInt(1));
+//                        objOptionLeg.setStrategyName(rs.getNString(2));
+//                        objOptionLeg.setSymbol(rs.getString(3));
+//                        objOptionLeg.setPosition(rs.getBoolean(4));
+//                        objOptionLeg.setPrice(rs.getInt(5));
+//                        objOptionLeg.setPostionCovered(rs.getBoolean(6));
+//                        objOptionLeg.setPostionCoverPrice(rs.getInt(7));
+//                        objOptionStrategy.setOptLeg(objOptionLeg);
+////                      objOptionStrategy.setOptLeg(new OptionLeg(rs.getInt(1), rs.getNString(2), rs.getString(3), rs.getBoolean(4), rs.getInt(5)));  
 //
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException sqlEx) { } // ignore
+//                    }
+//
+//                }
+//
+//        } catch (ClassNotFoundException | SQLException ex) {
+//            System.out.println("SQLException: " + ex.getMessage());
+////            System.out.println("SQLState: " + ex.);
+////            System.out.println("VendorError: " + ex.getErrorCode());
+//            ex.printStackTrace();
+//        } 
+//        finally {
+//            // it is a good idea to release
+//            // resources in a finally{} block
+//            // in reverse-order of their creation
+//            // if they are no-longer needed
+////
+//            if (rs != null) {
+//                try {
+//                    rs.close();
+//                } catch (SQLException sqlEx) { } // ignore
+//
+//                rs = null;
+//            }
+//
+//            if (stmt != null) {
+//                try {
+//                    stmt.close();
+//                } catch (SQLException sqlEx) { } // ignore
+//
+//                stmt = null;
+//            }
+//        }
+//    }
 
-                rs = null;
-            }
+    public void showChart () {
 
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException sqlEx) { } // ignore
-
-                stmt = null;
-            }
-        }  
-        System.out.print( "\n" + "showTableData: Finish" ); 
         pnlChart.removeAll();
         pnlChart.add(getLineChart(objOptionStrategy.getPayOffData()));
         pnlChart.revalidate();
         pnlChart.repaint();	
     } 
+//    
+//    public void showChart (String strStgName) {
+//
+//        pnlChart.removeAll();
+//        pnlChart.add(getLineChart(objOptionStrategy.getPayOffData()));
+//        pnlChart.revalidate();
+//        pnlChart.repaint();	
+//    } 
     
     private  ChartPanel getLineChart(List<Integer> list) {
             JFreeChart lineChart = ChartFactory.createXYLineChart(
@@ -151,77 +169,24 @@ public class StrgShowPanel extends javax.swing.JPanel {
             return dataset;	 
 
      }	    
-        
+    public void showStgShowTableData() {
+ 
+        for (OptionLeg objOptionLeg : objOptionStrategy.getListOptLeg()) { // For each OptionLeg in the list
+            strategyTableModel.addRowData(objOptionLeg);
+        }
+        strategyTableModel.fireTableDataChanged();    
+         
+    }        
   
-    public void showStgShowTableData(String strStgName) {
-       
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        int nColumnCnt = 1; //
-        String strStrategyName = "";
-
-        String strSQL =  "Select * from STRATEGY where name ='" + strStgName + "'";
-
-        try {
-                Class.forName("org.h2.Driver");
-                connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
-                stmt = connection.prepareStatement(strSQL);
-                rs = stmt.executeQuery();
-                
-                System.out.print( "\n" + "strSQL: " + strSQL); 
-                
-                if(rs != null) {
-
-                    if(strategyTableModel.getRowCount() > 0) {
-                            strategyTableModel.clearAllRows();
-                    }
-
-                    while(rs.next()) {
-
-                        strStrategyName = rs.getString(2);
-                        OptionLeg objOptionLeg = new OptionLeg(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getBoolean(4), rs.getInt(5), rs.getBoolean(6), rs.getInt(7));
-
-                        strategyTableModel.addRowData(strStrategyName, objOptionLeg);
-                        strategyTableModel.fireTableDataChanged();					
-
-//			System.out.print( "\n" + "ID: " + rowData[0]  + " Name: "+ rowData[1]  + " objOptionLeg. ID: "+ objOptionLeg.getID() + " Name: "+objOptionLeg.getStrategyName() );// + " Price: "+ rowData[3]   );
-
-                    }
-
-                }
-
-        } catch (ClassNotFoundException | SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
-//            System.out.println("SQLState: " + ex.);
-//            System.out.println("VendorError: " + ex.getErrorCode());
-            ex.printStackTrace();
-        } 
-        finally {
-            // it is a good idea to release
-            // resources in a finally{} block
-            // in reverse-order of their creation
-            // if they are no-longer needed
-//
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException sqlEx) { } // ignore
-
-                rs = null;
-            }
-
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException sqlEx) { } // ignore
-
-                stmt = null;
-            }
-        }  
-        System.out.print( "\n" + "showTableData: Finish" ); 
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            
-    }
+//    public void showStgShowTableData(String strStgName) {
+// 
+//        for (OptionLeg objOptionLeg : objOptionStrategy.getListOptLeg()) { // For each OptionLeg in the list
+//            strategyTableModel.addRowData(objOptionLeg);
+//        }
+//        strategyTableModel.fireTableDataChanged();    
+//         
+//    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

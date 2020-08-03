@@ -88,7 +88,7 @@ public class OptionLeg {
 		return bPosition;
 	}
 
-	public void setiPosition(boolean bPosition) {
+	public void setPosition(boolean bPosition) {
 		this.bPosition = bPosition;
 	}
 
@@ -102,11 +102,11 @@ public class OptionLeg {
 		}
 	}
 
-	public int getnPrice() {
+	public int getPrice() {
 		return nPrice;
 	}
 
-	public void setnPrice(int nPrice) {
+	public void setPrice(int nPrice) {
 		this.nPrice = nPrice;
 	}
 	
@@ -119,7 +119,7 @@ public class OptionLeg {
 	}
 	
 	public void setPostionCoverPrice(int price) {
-		this.nPrice = price;
+		this.iCoverPrice = price;
 	}
 	
 	public int getPostionCoverPrice() {

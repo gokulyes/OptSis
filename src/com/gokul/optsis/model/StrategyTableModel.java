@@ -41,7 +41,7 @@ public class StrategyTableModel extends AbstractTableModel {
 	        		return "Long";
 	        	else
 	        		return "Short";
-	        case 3: return objOptionLeg.getnPrice();
+	        case 3: return objOptionLeg.getPrice();
 	        default : return null;
 	      }
 	    }
@@ -60,12 +60,19 @@ public class StrategyTableModel extends AbstractTableModel {
 	    }
 
 
-	    public void addRowData(String strName, OptionLeg objOptionLeg){
+	    public void addRowData(OptionLeg objOptionLeg){
 	    	
-	    		strStrategyName = strName;
 	    		data.add(objOptionLeg);
-	    		System.out.print( "\n StrategyTable addRowData: " + objOptionLeg.toString() );
-	    }
+//	    		System.out.print( "\n StrategyTable addRowData: " + objOptionLeg.toString() );
+	    }            
+
+//
+//	    public void addRowData(String strName, OptionLeg objOptionLeg){
+//	    	
+//	    		strStrategyName = strName;
+//	    		data.add(objOptionLeg);
+//	    		System.out.print( "\n StrategyTable addRowData: " + objOptionLeg.toString() );
+//	    }
 	    
 	    public OptionLeg getRowData(int selRow) {
 	    	return data.get(selRow);
