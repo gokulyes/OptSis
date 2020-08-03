@@ -8,6 +8,7 @@ package com.gokul.optsis;
 import com.gokul.optsis.model.StrategyTableModel;
 
 import com.gokul.optsis.MainWindow;
+import com.gokul.optsis.dialog.EditPositionDialog;
 import com.gokul.optsis.model.OptionLeg;
 import com.gokul.optsis.model.OptionStrategy;
 import java.awt.Frame;
@@ -244,7 +245,17 @@ public class StrgShowPanel extends javax.swing.JPanel {
         add(filler1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 480, 320));
 
         tblStgShow.setModel(strategyTableModel);
+        tblStgShow.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblStgShowMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblStgShow);
+        // set the column width for each column
+        tblStgShow.getColumnModel().getColumn(0).setPreferredWidth(10);
+        tblStgShow.getColumnModel().getColumn(1).setPreferredWidth(100);
+        tblStgShow.getColumnModel().getColumn(2).setPreferredWidth(10);
+        tblStgShow.getColumnModel().getColumn(3).setPreferredWidth(10);
 
         add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 460, 300));
 
@@ -252,6 +263,18 @@ public class StrgShowPanel extends javax.swing.JPanel {
         add(filler2, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 10, 900, 590));
         add(pnlChart, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, 880, 570));
     }// </editor-fold>//GEN-END:initComponents
+
+    private void tblStgShowMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblStgShowMouseClicked
+       
+        int iSelectedRow = tblStgShow.getSelectedRow();
+        int id = strategyTableModel.getRowData(iSelectedRow).getID(); // Get seleected row ID.
+
+//        System.out.print("\nmouseClicked : " + StgTableModel.getRowData(iSelectedRow).toString());// StgTableModel.getValueAt(iSelectedRow, 0));
+
+        EditPositionDialog epd = new EditPositionDialog(null, true, id);
+       epd.setLocationRelativeTo(null);
+       epd.setVisible(true);    // TODO add your handling code here:
+    }//GEN-LAST:event_tblStgShowMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

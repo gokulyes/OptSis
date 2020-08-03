@@ -13,7 +13,7 @@ import javax.swing.table.AbstractTableModel;
 public class StrategyTableModel extends AbstractTableModel {
 
 		
-		private String[] columnNames = {"Symbol", "Position", "Price" };
+		private String[] columnNames = {"ID", "Symbol", "Position", "Price" };
 		private List<OptionLeg> data = new ArrayList<OptionLeg>();
 		private String strStrategyName;
 
@@ -33,13 +33,15 @@ public class StrategyTableModel extends AbstractTableModel {
 
 	      switch(colum){
 	      	case 0:
+	      		return objOptionLeg.getID();                  
+	      	case 1:
 	      		return objOptionLeg.getSymbol();
-	        case 1: 
+	        case 2: 
 	        	if (objOptionLeg.getPosition())
 	        		return "Long";
 	        	else
 	        		return "Short";
-	        case 2: return objOptionLeg.getnPrice();
+	        case 3: return objOptionLeg.getnPrice();
 	        default : return null;
 	      }
 	    }

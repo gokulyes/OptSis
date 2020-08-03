@@ -28,7 +28,7 @@ import javax.swing.SwingUtilities;
 public class MainWindow extends javax.swing.JFrame {
     
     private boolean menuShow = true;
-    private String strStgName = "Current Strategy: ";
+    private String strStgName = "Current Strategy: Not Selected  ";
 
     
 
@@ -105,7 +105,6 @@ public class MainWindow extends javax.swing.JFrame {
         pnlShow = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1600, 765));
 
         pnlMainHeader.setBackground(new java.awt.Color(129, 152, 48));
         pnlMainHeader.setPreferredSize(new java.awt.Dimension(800, 50));
@@ -115,6 +114,8 @@ public class MainWindow extends javax.swing.JFrame {
         lblTitle.setText("OptSis");
         lblTitle.setPreferredSize(new java.awt.Dimension(200, 17));
         pnlMainHeader.add(lblTitle, java.awt.BorderLayout.LINE_START);
+
+        lblCurrentStgName.setText("Current Strategy: Not Selected");
         pnlMainHeader.add(lblCurrentStgName, java.awt.BorderLayout.LINE_END);
 
         getContentPane().add(pnlMainHeader, java.awt.BorderLayout.PAGE_START);
