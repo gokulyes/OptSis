@@ -47,6 +47,10 @@ public class OptionStrategy {
 	public void setOptLeg(OptionLeg optionLeg) {
 		this.listOptLeg.add(optionLeg);
 	} 
+        
+	public void setOptLeg(OptionLeg optionLeg, int row) {
+		this.listOptLeg.set(row, optionLeg);
+	}         
 	
 	public List<Integer> getPayOffData() {
 

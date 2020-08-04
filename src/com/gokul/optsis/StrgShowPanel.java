@@ -41,15 +41,14 @@ public class StrgShowPanel extends javax.swing.JPanel {
     /**
      * Creates new form StgyShowPanel
      */
-    public StrgShowPanel(OptionStrategy obj) {
+    public StrgShowPanel(OptionStrategy obj, MainWindow window) {
         initComponents();
         
         this.objOptionStrategy = obj;
+        this.mainWindow = window;
         
         initPnlShow();
-//        getOptionStrategyData(stgName);
-//        showStgShowTableData(stgName);
-//        showChart(stgName);
+
         showStgShowTableData();
         showChart();
     }
@@ -57,69 +56,7 @@ public class StrgShowPanel extends javax.swing.JPanel {
     public void initPnlShow() {
         strategyTableModel = (StrategyTableModel) tblStgShow.getModel();
     }
-//    
-//    public void getOptionStrategyData(String strStgName) {
-//      PreparedStatement stmt = null;
-//        ResultSet rs = null;
-//        String strSQL =  "Select * from STRATEGY where name ='" + strStgName + "'";
-//        objOptionStrategy = new OptionStrategy();
-//        OptionLeg objOptionLeg;
-//        
-//         try {
-//                Class.forName("org.h2.Driver");
-//                connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
-//                stmt = connection.prepareStatement(strSQL);
-//                rs = stmt.executeQuery();
-//                
-//                System.out.print( "\n" + "strSQL: " + strSQL); 
-//                
-//                if(rs != null) {
-//                    objOptionStrategy.setStrName(strStgName);
-//                    while(rs.next()) {
-//                        objOptionLeg = new OptionLeg();
-//                        objOptionLeg.setID(rs.getInt(1));
-//                        objOptionLeg.setStrategyName(rs.getNString(2));
-//                        objOptionLeg.setSymbol(rs.getString(3));
-//                        objOptionLeg.setPosition(rs.getBoolean(4));
-//                        objOptionLeg.setPrice(rs.getInt(5));
-//                        objOptionLeg.setPostionCovered(rs.getBoolean(6));
-//                        objOptionLeg.setPostionCoverPrice(rs.getInt(7));
-//                        objOptionStrategy.setOptLeg(objOptionLeg);
-////                      objOptionStrategy.setOptLeg(new OptionLeg(rs.getInt(1), rs.getNString(2), rs.getString(3), rs.getBoolean(4), rs.getInt(5)));  
-//
-//                    }
-//
-//                }
-//
-//        } catch (ClassNotFoundException | SQLException ex) {
-//            System.out.println("SQLException: " + ex.getMessage());
-////            System.out.println("SQLState: " + ex.);
-////            System.out.println("VendorError: " + ex.getErrorCode());
-//            ex.printStackTrace();
-//        } 
-//        finally {
-//            // it is a good idea to release
-//            // resources in a finally{} block
-//            // in reverse-order of their creation
-//            // if they are no-longer needed
-////
-//            if (rs != null) {
-//                try {
-//                    rs.close();
-//                } catch (SQLException sqlEx) { } // ignore
-//
-//                rs = null;
-//            }
-//
-//            if (stmt != null) {
-//                try {
-//                    stmt.close();
-//                } catch (SQLException sqlEx) { } // ignore
-//
-//                stmt = null;
-//            }
-//        }
-//    }
+
 
     public void showChart () {
 
@@ -128,14 +65,6 @@ public class StrgShowPanel extends javax.swing.JPanel {
         pnlChart.revalidate();
         pnlChart.repaint();	
     } 
-//    
-//    public void showChart (String strStgName) {
-//
-//        pnlChart.removeAll();
-//        pnlChart.add(getLineChart(objOptionStrategy.getPayOffData()));
-//        pnlChart.revalidate();
-//        pnlChart.repaint();	
-//    } 
     
     private  ChartPanel getLineChart(List<Integer> list) {
             JFreeChart lineChart = ChartFactory.createXYLineChart(
@@ -177,16 +106,7 @@ public class StrgShowPanel extends javax.swing.JPanel {
         strategyTableModel.fireTableDataChanged();    
          
     }        
-  
-//    public void showStgShowTableData(String strStgName) {
-// 
-//        for (OptionLeg objOptionLeg : objOptionStrategy.getListOptLeg()) { // For each OptionLeg in the list
-//            strategyTableModel.addRowData(objOptionLeg);
-//        }
-//        strategyTableModel.fireTableDataChanged();    
-//         
-//    }
-    
+     
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -234,11 +154,9 @@ public class StrgShowPanel extends javax.swing.JPanel {
         int iSelectedRow = tblStgShow.getSelectedRow();
         int id = strategyTableModel.getRowData(iSelectedRow).getID(); // Get seleected row ID.
 
-//        System.out.print("\nmouseClicked : " + StgTableModel.getRowData(iSelectedRow).toString());// StgTableModel.getValueAt(iSelectedRow, 0));
-
-        EditPositionDialog epd = new EditPositionDialog(null, true, id);
-       epd.setLocationRelativeTo(null);
-       epd.setVisible(true);    // TODO add your handling code here:
+        EditPositionDialog epd = new EditPositionDialog(null, true, this.mainWindow, iSelectedRow, strategyTableModel.getRowData(iSelectedRow));
+        epd.setLocationRelativeTo(null);
+        epd.setVisible(true);    // TODO add your handling code here:
     }//GEN-LAST:event_tblStgShowMouseClicked
 
 

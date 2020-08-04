@@ -5,6 +5,7 @@
  */
 package com.gokul.optsis.dialog;
 
+import com.gokul.optsis.MainWindow;
 import com.gokul.optsis.model.OptionLeg;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,92 +22,44 @@ public class EditPositionDialog extends javax.swing.JDialog {
 
     private Connection connection ;
     private int iID =1;
+    private MainWindow mainWindow;
+    private int selectedRow;
+    private OptionLeg objOptionLeg;
+    
     /**
      * Creates new form EditPositionDialog
      */
-    public EditPositionDialog(java.awt.Frame parent, boolean modal, int iID) {
+    public EditPositionDialog(java.awt.Frame parent, boolean modal, MainWindow window, int selRow, OptionLeg obj) {
         super(parent, modal);
         initComponents();
         this.iID = iID;
+        this.mainWindow = window;
+        this.selectedRow = selRow;
+        this.objOptionLeg = obj;
         
-        showStgShowTableData(this.iID);
+        showStgShowTableData();
     }
-  
-    public void showStgShowTableData(int iID) {
-       
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        int nColumnCnt = 1; //
-//        String strStrategyName = "";
-
-        String strSQL =  "Select * from STRATEGY where id =" + iID ;
-
-        try {
-                Class.forName("org.h2.Driver");
-                connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
-                stmt = connection.prepareStatement(strSQL);
-                rs = stmt.executeQuery();
-                
-//                System.out.print( "\n" + "strSQL: " + strSQL); 
-                
-                if(rs != null) {
-
-
-                    if(rs.next()) {
-
-//                        strStrategyName = rs.getString(2);
-                        OptionLeg objOptionLeg = new OptionLeg(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getBoolean(4), rs.getInt(5), rs.getBoolean(6), rs.getInt(7));
-                        
-                        txtID.setText(Integer.toString(objOptionLeg.getID()));
-                        txtName.setText(objOptionLeg.getStrategyName());
-                        txtSymbol.setText(objOptionLeg.getSymbol());
-                        if(objOptionLeg.getPosition()){
-                            rdbtnLong.setSelected(true);
-                        } else {
-                            rdbtnShort.setSelected(true);
-                        }
-                        txtPrice.setText(Integer.toString(objOptionLeg.getPrice()));
-                        if(objOptionLeg.getPostionCover()){
-                            chkCovered.setSelected(true);
-                        } else {
-                            chkCovered.setSelected(false);
-                        }
-                        txtCPrice.setText(Integer.toString(objOptionLeg.getPostionCoverPrice()));
-//                        System.out.print("\n ID: " + rs.getInt(1) + " Name: " +  rs.getString(2) + " Symbol: "+ rs.getString(3) + " Position: " + rs.getBoolean(4));
-
-                    }
-
-                }
-
-        } catch (ClassNotFoundException | SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
-
-            ex.printStackTrace();
-        } 
-        finally {
-            // it is a good idea to release
-            // resources in a finally{} block
-            // in reverse-order of their creation
-            // if they are no-longer needed
-
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException sqlEx) { } // ignore
-
-                rs = null;
-            }
-
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException sqlEx) { } // ignore
-
-                stmt = null;
-            }
-        }  
+    
+    public void showStgShowTableData() {
+                       
+        txtID.setText(Integer.toString(objOptionLeg.getID()));
+        txtName.setText(objOptionLeg.getStrategyName());
+        txtSymbol.setText(objOptionLeg.getSymbol());
+        if(objOptionLeg.getPosition()){
+            rdbtnLong.setSelected(true);
+        } else {
+            rdbtnShort.setSelected(true);
+        }
+        txtPrice.setText(Integer.toString(objOptionLeg.getPrice()));
+        if(objOptionLeg.getPostionCover()){
+            chkCovered.setSelected(true);
+        } else {
+            chkCovered.setSelected(false);
+        }
+        txtCPrice.setText(Integer.toString(objOptionLeg.getPostionCoverPrice()));
             
-    }
+    }    
+ 
    public void updateCoverPrice(int iID, int cPrice) {
        
         PreparedStatement stmt = null;
@@ -138,7 +91,12 @@ public class EditPositionDialog extends javax.swing.JDialog {
 
                 stmt = null;
             }
-        }  
+        } 
+
+        this.objOptionLeg.setPostionCovered(true);
+        this.objOptionLeg.setPostionCoverPrice(cPrice);
+
+        mainWindow.updatePosition(this.objOptionLeg, this.selectedRow);
             
     }    
     /**

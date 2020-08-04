@@ -42,6 +42,13 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
     }
     
+    public void updatePosition(OptionLeg objOptionLeg, int selectedRow) {
+        objOptionStrategy.setOptLeg(objOptionLeg, selectedRow);
+        lblCurrentStgPL.setText("Current P/L        : " + objOptionStrategy.getPL());
+        System.out.print("\nupdatePosition: objOptionLeg: " + objOptionLeg.toString());
+         System.out.print("\nupdatePosition: selectedRow: " + selectedRow);
+        System.out.print("\nupdatePosition: objOptionStrategy.getPL(): " + objOptionStrategy.getPL());
+    }
     public void setCurrentStrategy(OptionStrategy obj) {
         this.objOptionStrategy = obj;
     }
@@ -419,7 +426,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void btnShowMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnShowMouseClicked
         pnlMainDashboard.removeAll();
 //        pnlMainDashboard.add(pnlShow);
-        StrgShowPanel stgyShowPanel = new StrgShowPanel(objOptionStrategy);
+        StrgShowPanel stgyShowPanel = new StrgShowPanel(objOptionStrategy, this);
         pnlMainDashboard.add(stgyShowPanel);
         
         showHideMenu(pnlMainMenu,  Boolean.FALSE);      // TODO add your handling code here:
