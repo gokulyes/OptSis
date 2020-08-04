@@ -7,17 +7,16 @@ package com.gokul.optsis;
 
 import com.gokul.optsis.model.StrategyTableModel;
 
-import com.gokul.optsis.MainWindow;
 import com.gokul.optsis.dialog.EditPositionDialog;
 import com.gokul.optsis.model.OptionLeg;
 import com.gokul.optsis.model.OptionStrategy;
-import java.awt.Frame;
-import java.sql.DriverManager;
+import com.gokul.optsis.model.StrategyPayOffTableModel;
+import java.awt.Color;
+import java.awt.Component;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.ResultSet;
 import java.util.List;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -36,6 +35,7 @@ public class StrgShowPanel extends javax.swing.JPanel {
     private Connection connection ;
     private MainWindow mainWindow;   
     private StrategyTableModel strategyTableModel = new StrategyTableModel();
+    private StrategyPayOffTableModel strategyPayOffTableModel = new StrategyPayOffTableModel();
     private OptionStrategy objOptionStrategy = new OptionStrategy();
     
     /**
@@ -51,14 +51,34 @@ public class StrgShowPanel extends javax.swing.JPanel {
 
         showStgShowTableData();
         showChart();
+        showStgPayoffTabelData();
     }
     
-    public void initPnlShow() {
+    private void initPnlShow() {
         strategyTableModel = (StrategyTableModel) tblStgShow.getModel();
+        strategyPayOffTableModel = (StrategyPayOffTableModel) tblStgPayoff.getModel();
+        tblStgPayoff.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+            @Override
+            public Component getTableCellRendererComponent(JTable table,
+                    Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+
+                int status = (int)tblStgPayoff.getModel().getValueAt(row, 1);
+                if (status >= 0) {
+                    setBackground(new Color(129, 152, 48));
+                    setForeground(Color.WHITE);
+                } else {
+                    setBackground(table.getBackground());
+                    setForeground(table.getForeground());
+                }       
+                return this;
+            }   
+        });        
     }
 
 
-    public void showChart () {
+    private void showChart () {
 
         pnlChart.removeAll();
         pnlChart.add(getLineChart(objOptionStrategy.getPayOffData()));
@@ -75,7 +95,7 @@ public class StrgShowPanel extends javax.swing.JPanel {
                      true,true,false);	
 
             ChartPanel chartPanel = new ChartPanel( lineChart );
-            chartPanel.setPreferredSize( new java.awt.Dimension( 880, 600 ) );
+            chartPanel.setPreferredSize( new java.awt.Dimension( 590, 500 ) );
             chartPanel.setVisible(true);
 
             return chartPanel;
@@ -98,14 +118,17 @@ public class StrgShowPanel extends javax.swing.JPanel {
             return dataset;	 
 
      }	    
-    public void showStgShowTableData() {
+    private void showStgShowTableData() {
  
         for (OptionLeg objOptionLeg : objOptionStrategy.getListOptLeg()) { // For each OptionLeg in the list
             strategyTableModel.addRowData(objOptionLeg);
         }
         strategyTableModel.fireTableDataChanged();    
          
-    }        
+    }  
+    private void showStgPayoffTabelData() {
+        strategyPayOffTableModel.setPlData(objOptionStrategy.getPayOffData());
+    }
      
     /**
      * This method is called from within the constructor to initialize the form.
@@ -121,6 +144,9 @@ public class StrgShowPanel extends javax.swing.JPanel {
         tblStgShow = new javax.swing.JTable();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(500, 0), new java.awt.Dimension(500, 0), new java.awt.Dimension(500, 32767));
         pnlChart = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblStgPayoff = new javax.swing.JTable();
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(300, 0), new java.awt.Dimension(300, 0), new java.awt.Dimension(300, 32767));
 
         setMinimumSize(new java.awt.Dimension(1200, 715));
         setPreferredSize(new java.awt.Dimension(1200, 715));
@@ -145,8 +171,16 @@ public class StrgShowPanel extends javax.swing.JPanel {
         add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 460, 300));
 
         filler2.setBorder(new javax.swing.border.LineBorder(java.awt.SystemColor.activeCaption, 1, true));
-        add(filler2, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 10, 900, 590));
-        add(pnlChart, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, 880, 570));
+        add(filler2, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 10, 610, 520));
+        add(pnlChart, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, 590, 500));
+
+        tblStgPayoff.setModel(strategyPayOffTableModel);
+        jScrollPane2.setViewportView(tblStgPayoff);
+
+        add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1130, 20, 220, 800));
+
+        filler3.setBorder(new javax.swing.border.LineBorder(java.awt.SystemColor.activeCaption, 1, true));
+        add(filler3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 10, 240, 820));
     }// </editor-fold>//GEN-END:initComponents
 
     private void tblStgShowMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblStgShowMouseClicked
@@ -154,7 +188,7 @@ public class StrgShowPanel extends javax.swing.JPanel {
         int iSelectedRow = tblStgShow.getSelectedRow();
         int id = strategyTableModel.getRowData(iSelectedRow).getID(); // Get seleected row ID.
 
-        EditPositionDialog epd = new EditPositionDialog(null, true, this.mainWindow, iSelectedRow, strategyTableModel.getRowData(iSelectedRow));
+        EditPositionDialog epd = new EditPositionDialog(null, true, this.mainWindow, strategyTableModel.getRowData(iSelectedRow));
         epd.setLocationRelativeTo(null);
         epd.setVisible(true);    // TODO add your handling code here:
     }//GEN-LAST:event_tblStgShowMouseClicked
@@ -163,8 +197,11 @@ public class StrgShowPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
+    private javax.swing.Box.Filler filler3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel pnlChart;
+    private javax.swing.JTable tblStgPayoff;
     private javax.swing.JTable tblStgShow;
     // End of variables declaration//GEN-END:variables
 }

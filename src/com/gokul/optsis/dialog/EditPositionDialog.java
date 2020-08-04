@@ -23,18 +23,16 @@ public class EditPositionDialog extends javax.swing.JDialog {
     private Connection connection ;
     private int iID =1;
     private MainWindow mainWindow;
-    private int selectedRow;
     private OptionLeg objOptionLeg;
     
     /**
      * Creates new form EditPositionDialog
      */
-    public EditPositionDialog(java.awt.Frame parent, boolean modal, MainWindow window, int selRow, OptionLeg obj) {
+    public EditPositionDialog(java.awt.Frame parent, boolean modal, MainWindow window, OptionLeg obj) {
         super(parent, modal);
         initComponents();
-        this.iID = iID;
+        this.iID = obj.getID();
         this.mainWindow = window;
-        this.selectedRow = selRow;
         this.objOptionLeg = obj;
         
         showStgShowTableData();
@@ -65,7 +63,7 @@ public class EditPositionDialog extends javax.swing.JDialog {
         PreparedStatement stmt = null;
 
         String strSQL =  "update STRATEGY set coverprice = " + cPrice + ",covered = true where id =" + iID ;
-
+        System.out.println("\nupdateCoverPrice: " + strSQL);
         try {
                 Class.forName("org.h2.Driver");
                 connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
@@ -96,7 +94,7 @@ public class EditPositionDialog extends javax.swing.JDialog {
         this.objOptionLeg.setPostionCovered(true);
         this.objOptionLeg.setPostionCoverPrice(cPrice);
 
-        mainWindow.updatePosition(this.objOptionLeg, this.selectedRow);
+        mainWindow.updatePosition(iID, this.objOptionLeg);
             
     }    
     /**

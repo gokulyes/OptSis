@@ -66,13 +66,6 @@ public class StrategyTableModel extends AbstractTableModel {
 //	    		System.out.print( "\n StrategyTable addRowData: " + objOptionLeg.toString() );
 	    }            
 
-//
-//	    public void addRowData(String strName, OptionLeg objOptionLeg){
-//	    	
-//	    		strStrategyName = strName;
-//	    		data.add(objOptionLeg);
-//	    		System.out.print( "\n StrategyTable addRowData: " + objOptionLeg.toString() );
-//	    }
 	    
 	    public OptionLeg getRowData(int selRow) {
 	    	return data.get(selRow);

@@ -42,12 +42,13 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
     }
     
-    public void updatePosition(OptionLeg objOptionLeg, int selectedRow) {
-        objOptionStrategy.setOptLeg(objOptionLeg, selectedRow);
+    public void updatePosition(int id, OptionLeg objOptionLeg) {
+//        objOptionStrategy.setOptLeg(objOptionLeg, selectedRow);
+        objOptionStrategy.setOptLeg(id, objOptionLeg);
         lblCurrentStgPL.setText("Current P/L        : " + objOptionStrategy.getPL());
-        System.out.print("\nupdatePosition: objOptionLeg: " + objOptionLeg.toString());
-         System.out.print("\nupdatePosition: selectedRow: " + selectedRow);
-        System.out.print("\nupdatePosition: objOptionStrategy.getPL(): " + objOptionStrategy.getPL());
+//        System.out.print("\nupdatePosition: objOptionLeg: " + objOptionLeg.toString());
+//         System.out.print("\nupdatePosition: selectedRow: " + selectedRow);
+//        System.out.print("\nupdatePosition: objOptionStrategy.getPL(): " + objOptionStrategy.getPL());
     }
     public void setCurrentStrategy(OptionStrategy obj) {
         this.objOptionStrategy = obj;

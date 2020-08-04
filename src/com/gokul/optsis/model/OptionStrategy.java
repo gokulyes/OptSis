@@ -23,74 +23,87 @@ public class OptionStrategy {
 		super();
 		this.strName = strName;
 		this.listOptLeg = listOptLeg;
+                setPL();
 	}
 
 	public String getStrName() {
 		return strName;
 	}
 
-
 	public void setStrName(String strName) {
 		this.strName = strName;
 	}
-
 
 	public List<OptionLeg> getListOptLeg() {
 		return listOptLeg;
 	}
 
-
 	public void setListOptLeg(List<OptionLeg> listOptLeg) {
 		this.listOptLeg = listOptLeg;
+                setPL();
 	} 
 	
 	public void setOptLeg(OptionLeg optionLeg) {
 		this.listOptLeg.add(optionLeg);
+                setPL();
 	} 
-        
-	public void setOptLeg(OptionLeg optionLeg, int row) {
-		this.listOptLeg.set(row, optionLeg);
+
+	public void setOptLeg(int id, OptionLeg optionLeg) {
+            List<OptionLeg> listOL = new ArrayList<>();	 
+            for (OptionLeg objOptionLeg : listOptLeg) {
+                if(objOptionLeg.getID() == id) {
+                    listOL.add(optionLeg);
+                } else {
+                    listOL.add(objOptionLeg);
+                }
+            }
+            this.listOptLeg = listOL;
+            setPL();
 	}         
 	
 	public List<Integer> getPayOffData() {
 
-		boolean boolFirst = true;
-		int nInnerCounter = 0;
-		List<Integer> listOLPayOff = new ArrayList<>();
+            boolean boolFirst = true;
+            int nInnerCounter = 0;
+            List<Integer> listOLPayOff = new ArrayList<>();
 
 
-		for (OptionLeg outerElement : listOptLeg) {
-			
-			nInnerCounter = 0;
-			for (Integer intElement : outerElement.getPayOffData()) {
+            for (OptionLeg outerElement : listOptLeg) {
 
-				if (boolFirst == true) {
-					listOLPayOff.add(intElement);
-				} else {
-					listOLPayOff.set(nInnerCounter,  listOLPayOff.get(nInnerCounter) + intElement);
-				}
-				nInnerCounter++;
-			}
-			boolFirst = false;
-			
-		}
-		
-		return listOLPayOff;		
+                    nInnerCounter = 0;
+                    for (Integer intElement : outerElement.getPayOffData()) {
+
+                            if (boolFirst == true) {
+                                    listOLPayOff.add(intElement);
+                            } else {
+                                    listOLPayOff.set(nInnerCounter,  listOLPayOff.get(nInnerCounter) + intElement);
+                            }
+                            nInnerCounter++;
+                    }
+                    boolFirst = false;
+
+            }
+
+            return listOLPayOff;		
 
 	}
         
         public int getPL() {
-            int iPL = 0;
+            return iPL;
+        }
+        
+        public void setPL() {
+            int pl = 0;
             for (OptionLeg objOptionLeg : listOptLeg) { // For each OptionLeg in the list
                 if(objOptionLeg.getPostionCover()) {
                     if(objOptionLeg.getPosition()) {
-                        iPL +=  (objOptionLeg.getPostionCoverPrice() - objOptionLeg.getPrice());
+                        pl +=  (objOptionLeg.getPostionCoverPrice() - objOptionLeg.getPrice());
                     } else {
-                        iPL +=  (objOptionLeg.getPrice() - objOptionLeg.getPostionCoverPrice());
+                        pl +=  (objOptionLeg.getPrice() - objOptionLeg.getPostionCoverPrice());
                     }
                 }
             }
-            return iPL;
+            this.iPL = pl;
             
         }
 
