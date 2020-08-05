@@ -36,15 +36,14 @@ public class StrgShowPanel extends javax.swing.JPanel {
     private MainWindow mainWindow;   
     private StrategyTableModel strategyTableModel = new StrategyTableModel();
     private StrategyPayOffTableModel strategyPayOffTableModel = new StrategyPayOffTableModel();
-    private OptionStrategy objOptionStrategy = new OptionStrategy();
+//    private OptionStrategy objOptionStrategy = new OptionStrategy();
     
     /**
      * Creates new form StgyShowPanel
      */
-    public StrgShowPanel(OptionStrategy obj, MainWindow window) {
+    public StrgShowPanel(MainWindow window) {
         initComponents();
         
-        this.objOptionStrategy = obj;
         this.mainWindow = window;
         
         initPnlShow();
@@ -69,7 +68,7 @@ public class StrgShowPanel extends javax.swing.JPanel {
                     setBackground(new Color(129, 152, 48));
                     setForeground(Color.WHITE);
                 } else {
-                    setBackground(table.getBackground());
+                    setBackground(new Color(192, 204, 153));
                     setForeground(table.getForeground());
                 }       
                 return this;
@@ -81,17 +80,18 @@ public class StrgShowPanel extends javax.swing.JPanel {
     private void showChart () {
 
         pnlChart.removeAll();
-        pnlChart.add(getLineChart(objOptionStrategy.getCurrentPayOffData()));
+//        pnlChart.add(getLineChart(mainWindow.getCurrentStrategy().getCurrentPayOffData()));
+        pnlChart.add(getLineChart());        
 //        pnlChart.add(getLineChart(objOptionStrategy.getNetPayOffData()));
         pnlChart.revalidate();
         pnlChart.repaint();	
     } 
     
-    private  ChartPanel getLineChart(List<Integer> list) {
+    private  ChartPanel getLineChart() {
             JFreeChart lineChart = ChartFactory.createXYLineChart(
                      "PayOff",
                      "Spot price","P/L",
-                     createDataset(list) ,
+                     createDataset() ,
                      PlotOrientation.VERTICAL,
                      true,true,false);	
 
@@ -103,20 +103,20 @@ public class StrgShowPanel extends javax.swing.JPanel {
 
     }    
 
-    private  XYDataset createDataset(List<Integer> list) {
+    private  XYDataset createDataset() {
         
-        List<Integer> listNet = objOptionStrategy.getNetPayOffData();
-        List<Integer> listCurrent = objOptionStrategy.getCurrentPayOffData();
+        List<Integer> listNet = mainWindow.getCurrentStrategy().getNetPayOffData();
+        List<Integer> listCurrent = mainWindow.getCurrentStrategy().getCurrentPayOffData();
 
         var seriesNet = new XYSeries("Net");
-        int nUnderlyingPrice = 8000;
+        int nUnderlyingPrice = mainWindow.getCurrentStrategy().getChartStart();
 
         for (Integer element : listNet) {
             seriesNet.add(nUnderlyingPrice, element.doubleValue());
             nUnderlyingPrice += 100;
         }
 
-        nUnderlyingPrice = 8000;
+        nUnderlyingPrice = mainWindow.getCurrentStrategy().getChartStart();
         var seriesCurrent = new XYSeries("Current ");
 
         for (Integer element : listCurrent) {
@@ -133,14 +133,14 @@ public class StrgShowPanel extends javax.swing.JPanel {
      }	    
     private void showStgShowTableData() {
  
-        for (OptionLeg objOptionLeg : objOptionStrategy.getCurrentLstOptLeg()) { // For each OptionLeg in the list
+        for (OptionLeg objOptionLeg : mainWindow.getCurrentStrategy().getCurrentLstOptLeg()) { // For each OptionLeg in the list
             strategyTableModel.addRowData(objOptionLeg);
         }
         strategyTableModel.fireTableDataChanged();    
          
     }  
     private void showStgPayoffTabelData() {
-        strategyPayOffTableModel.setPlData(objOptionStrategy.getCurrentPayOffData());
+        strategyPayOffTableModel.setPlData(mainWindow.getCurrentStrategy().getChartStart(), mainWindow.getCurrentStrategy().getChartEnd(), mainWindow.getCurrentStrategy().getCurrentPayOffData());
     }
      
     /**

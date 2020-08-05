@@ -27,6 +27,8 @@ public class OptionLeg {
 	private int nPrice;
 	private boolean bCovered = false;		// Position covered?
 	private int iCoverPrice = 0;			// Position covered at price.
+        private int chartStart = 0;
+        private int chartEnd = 0;
 	
 	public OptionLeg () {
 		
@@ -128,53 +130,68 @@ public class OptionLeg {
 	
 	
 	public List<Integer> getPayOffData() {
-		List<Integer> listOLPayOff = new ArrayList<>();
-//		String strType = this.strSymbol.substring(this.strSymbol.length() -2);
-		int nStrike = strSymbol.length() > 12 ? Integer.parseInt(strSymbol.substring(0, strSymbol.length()-2).substring(12)) : 0;		
-		
-		for(int nUnderlying =8000; nUnderlying <= 12000; nUnderlying+=100) {
-			if(this.strSymbol.substring(this.strSymbol.length() -2).equals("CE")) { // 0: Call, 1: Put
-				if (bPosition) { // Long ------ 		true: Long, False: Short 
-					if (nUnderlying > nStrike) { // In the Money
-						listOLPayOff.add(nUnderlying - nStrike - nPrice);
-					} else { // Out of the Money
-						listOLPayOff.add(- nPrice);
-					}
+            List<Integer> listOLPayOff = new ArrayList<>();
+    //		String strType = this.strSymbol.substring(this.strSymbol.length() -2);
+            int nStrike = strSymbol.length() > 12 ? Integer.parseInt(strSymbol.substring(0, strSymbol.length()-2).substring(12)) : 0;		
 
-					
-				} else if (!bPosition) { //Short
-					if (nUnderlying > nStrike) { // In the Money
-						listOLPayOff.add(-(nUnderlying - nStrike - nPrice));
-					} else { // Out of the Money
-						listOLPayOff.add(nPrice);
-					}
+            for(int nUnderlying = chartStart; nUnderlying <= chartEnd; nUnderlying+=100) {
+                    if(this.strSymbol.substring(this.strSymbol.length() -2).equals("CE")) { // 0: Call, 1: Put
+                            if (bPosition) { // Long ------ 		true: Long, False: Short 
+                                    if (nUnderlying > nStrike) { // In the Money
+                                            listOLPayOff.add(nUnderlying - nStrike - nPrice);
+                                    } else { // Out of the Money
+                                            listOLPayOff.add(- nPrice);
+                                    }
 
-				}
 
-			} else { // Put
-				if (bPosition) { // Long
-					if (nUnderlying < nStrike) { // In the Money
-						listOLPayOff.add( nStrike - nUnderlying - nPrice);
-					} else { // Out of the Money
-						listOLPayOff.add(- nPrice);
-					}
+                            } else if (!bPosition) { //Short
+                                    if (nUnderlying > nStrike) { // In the Money
+                                            listOLPayOff.add(-(nUnderlying - nStrike - nPrice));
+                                    } else { // Out of the Money
+                                            listOLPayOff.add(nPrice);
+                                    }
 
-					
-				} else if (!bPosition) { //Short
-					if (nUnderlying < nStrike) { // In the Money
-						listOLPayOff.add(-(nStrike - nUnderlying - nPrice));
-					} else { // Out of the Money
-						listOLPayOff.add(nPrice);
-					}	
+                            }
 
-				}
-				
-			}
-		}			
-		
-		return listOLPayOff;
-	}
-	
+                    } else { // Put
+                            if (bPosition) { // Long
+                                    if (nUnderlying < nStrike) { // In the Money
+                                            listOLPayOff.add( nStrike - nUnderlying - nPrice);
+                                    } else { // Out of the Money
+                                            listOLPayOff.add(- nPrice);
+                                    }
+
+
+                            } else if (!bPosition) { //Short
+                                    if (nUnderlying < nStrike) { // In the Money
+                                            listOLPayOff.add(-(nStrike - nUnderlying - nPrice));
+                                    } else { // Out of the Money
+                                            listOLPayOff.add(nPrice);
+                                    }	
+
+                            }
+
+                    }
+            }			
+
+            return listOLPayOff;
+    }
+        
+    public void setChartStart(int start) {
+        this.chartStart = start;
+    }
+    
+    public int getChartStart() {
+        return this.chartStart;
+    }
+    
+    public void setChartEnd(int end) {
+        this.chartEnd =  end;
+    }
+    
+    public int getChartEnd() {
+        return this.chartEnd;
+    }
 
 
 

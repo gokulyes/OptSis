@@ -8,16 +8,11 @@ package com.gokul.optsis;
 
 import com.gokul.optsis.dialog.AddNew;
 import com.gokul.optsis.dialog.StrategyListDialog;
-import com.gokul.optsis.model.OptionLeg;
 import com.gokul.optsis.model.OptionStrategy;
 import com.gokul.optsis.util.Util;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -34,6 +29,7 @@ public class MainWindow extends javax.swing.JFrame {
     private String strStgName = "Current Strategy: Not Selected  ";
     private String strStgPL = "Current P/L        :";
     private OptionStrategy objOptionStrategy;
+    private StrgShowPanel stgyShowPanel;
 
     
 
@@ -42,14 +38,11 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
     }
     
-    public void updatePosition(int id, OptionLeg objOptionLeg) {
-//        objOptionStrategy.setOptLeg(objOptionLeg, selectedRow);
-        objOptionStrategy.setOptLeg(id, objOptionLeg);
-        lblCurrentStgPL.setText("Current P/L        : " + objOptionStrategy.getPL());
-//        System.out.print("\nupdatePosition: objOptionLeg: " + objOptionLeg.toString());
-//         System.out.print("\nupdatePosition: selectedRow: " + selectedRow);
-//        System.out.print("\nupdatePosition: objOptionStrategy.getPL(): " + objOptionStrategy.getPL());
+    public void updatePosition() {
+       selectStrategy(objOptionStrategy.getStrName());
+       showStgyPanel();
     }
+    
     public void setCurrentStrategy(OptionStrategy obj) {
         this.objOptionStrategy = obj;
     }
@@ -60,9 +53,13 @@ public class MainWindow extends javax.swing.JFrame {
         
         lblCurrentStgName.setText("Current Strategy: " + strStgName + "   ");
         lblCurrentStgPL.setText("Current P/L        : " + objOptionStrategy.getPL());
-        
               
     }
+    
+    public OptionStrategy getCurrentStrategy() {
+        return this.objOptionStrategy;
+    }
+    
     public void changeIcon(JLabel lblImage, String path) {
 
         lblImage.setIcon(new ImageIcon(getClass().getResource(path)));
@@ -133,6 +130,7 @@ public class MainWindow extends javax.swing.JFrame {
         pnlMainHeader.setLayout(new java.awt.BorderLayout());
 
         lblTitle.setFont(new java.awt.Font("Ink Free", 2, 48)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(192, 204, 153));
         lblTitle.setText("OptSis");
         lblTitle.setPreferredSize(new java.awt.Dimension(200, 17));
         pnlMainHeader.add(lblTitle, java.awt.BorderLayout.LINE_START);
@@ -373,12 +371,10 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_lblIconListMouseClicked
 
     private void lblIconListMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblIconListMouseEntered
-//        changeColor(pnlIconList, new Color(171, 186, 117)); 
         changeColor(pnlLineList, new Color(204, 0, 0)); 
     }//GEN-LAST:event_lblIconListMouseEntered
 
     private void lblIconListMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblIconListMouseExited
-//       changeColor(pnlIconList, new Color(129, 152, 48)); 
        changeColor(pnlLineList, new Color(129, 152, 48)); 
     }//GEN-LAST:event_lblIconListMouseExited
 
@@ -387,12 +383,10 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_lblIconSettingsMouseClicked
 
     private void lblIconSettingsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblIconSettingsMouseEntered
-//       changeColor(pnlIconSetting, new Color(171, 186, 117)); 
        changeColor(pnlLineSettings, new Color(204, 0, 0)); 
     }//GEN-LAST:event_lblIconSettingsMouseEntered
 
     private void lblIconSettingsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblIconSettingsMouseExited
-//        changeColor(pnlIconSetting, new Color(129, 152, 48));
         changeColor(pnlLineSettings, new Color(129, 152, 48)); 
     }//GEN-LAST:event_lblIconSettingsMouseExited
 
@@ -414,25 +408,29 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSelectMouseClicked
 
     private void btnAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMouseClicked
-        pnlMainDashboard.removeAll();
-        pnlMainDashboard.add(pnlShow);
+//        pnlMainDashboard.removeAll();
+//        pnlMainDashboard.add(pnlShow);
         
         showHideMenu(pnlMainMenu,  Boolean.FALSE);
         
-        AddNew andialog = new AddNew(this, true);
+        AddNew andialog = new AddNew(this, true, this);
         andialog.setLocationRelativeTo(null);
         andialog.setVisible(true);
     }//GEN-LAST:event_btnAddMouseClicked
 
     private void btnShowMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnShowMouseClicked
-        pnlMainDashboard.removeAll();
-//        pnlMainDashboard.add(pnlShow);
-        StrgShowPanel stgyShowPanel = new StrgShowPanel(objOptionStrategy, this);
-        pnlMainDashboard.add(stgyShowPanel);
-        
-        showHideMenu(pnlMainMenu,  Boolean.FALSE);      // TODO add your handling code here:
+        showStgyPanel();
     }//GEN-LAST:event_btnShowMouseClicked
 
+    private void showStgyPanel() {
+       
+        pnlMainDashboard.removeAll();
+        stgyShowPanel = new StrgShowPanel( this );
+        pnlMainDashboard.add(stgyShowPanel);
+        
+        showHideMenu(pnlMainMenu,  Boolean.FALSE);  
+        
+    }
     /**
      * @param args the command line arguments
      */

@@ -94,7 +94,7 @@ public class EditPositionDialog extends javax.swing.JDialog {
         this.objOptionLeg.setPostionCovered(true);
         this.objOptionLeg.setPostionCoverPrice(cPrice);
 
-        mainWindow.updatePosition(iID, this.objOptionLeg);
+        mainWindow.updatePosition();
             
     }    
     /**

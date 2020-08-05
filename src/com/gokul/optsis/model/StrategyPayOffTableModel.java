@@ -48,11 +48,11 @@ public class StrategyPayOffTableModel extends AbstractTableModel {
         return columnNames[column];
     }
     
-    public void setPlData(List<Integer> data) {
+    public void setPlData(int chartStart, int chartEnd, List<Integer> data) {
         this.plData = data;
         
         strikeData = new ArrayList<Integer>();
-        for(int nUnderlying =8000; nUnderlying <= 12000; nUnderlying+=100) {
+        for(int nUnderlying = chartStart; nUnderlying <= chartEnd; nUnderlying+=100) {
             strikeData.add(nUnderlying);
         }
      }

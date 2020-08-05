@@ -14,9 +14,11 @@ public class OptionStrategy {
     private int iPL;
     private List<OptionLeg> listOptLeg = new ArrayList<>();	
     private List<OptionLeg> currentLstOptLeg = new ArrayList<>();	
-
+    private int chartStart = 9000;
+    private int chartEnd = 12000;
+    
     public OptionStrategy() {
-
+        System.out.print("\n OptionStrategy: chartStart - " + chartStart);
     }	
 
 
@@ -43,6 +45,8 @@ public class OptionStrategy {
     }
 
     public void addOptLeg(OptionLeg optionLeg) {
+            optionLeg.setChartStart(getChartStart());
+            optionLeg.setChartEnd(getChartEnd());
             this.listOptLeg.add(optionLeg);
             if (!optionLeg.getPostionCover()) { // If not covered. Add to current list.
               currentLstOptLeg.add(optionLeg);
@@ -125,6 +129,14 @@ public class OptionStrategy {
         }
         this.iPL = pl;
 
+    }
+    
+    public int getChartStart(){
+        return this.chartStart ;
+    }
+    
+    public int getChartEnd() {
+        return this.chartEnd ;
     }
 
 

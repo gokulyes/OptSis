@@ -5,6 +5,8 @@
  */
 package com.gokul.optsis.dialog;
 
+import com.gokul.optsis.MainWindow;
+import com.gokul.optsis.model.OptionLeg;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -19,13 +21,18 @@ import javax.swing.JOptionPane;
 public class AddNew extends javax.swing.JDialog {
     
      private Connection connection = null;
+     private MainWindow mainWindow;
 
     /**
      * Creates new form AddNew
      */
-    public AddNew(java.awt.Frame parent, boolean modal) {
+    public AddNew(java.awt.Frame parent, boolean modal, MainWindow window) {
         super(parent, modal);
+        this.mainWindow = window;
+       
         initComponents();
+        
+        txtStgName.setText(window.getCurrentStrategy().getStrName());
     }
 
     /**
@@ -84,6 +91,8 @@ public class AddNew extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setText("Strategy Name");
         pnlMain.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 40, -1, -1));
+
+        txtStgName.setEnabled(false);
         pnlMain.add(txtStgName, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 40, 150, -1));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -237,6 +246,7 @@ public class AddNew extends javax.swing.JDialog {
                 stmt = null;
             }
         }
+        mainWindow.updatePosition();
         
 			
     }//GEN-LAST:event_btnAddMouseClicked
@@ -257,48 +267,6 @@ public class AddNew extends javax.swing.JDialog {
 
 		        txtStgSymbol.setText(date);
     }//GEN-LAST:event_txtStgPriceFocusGained
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                AddNew dialog = new AddNew(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
