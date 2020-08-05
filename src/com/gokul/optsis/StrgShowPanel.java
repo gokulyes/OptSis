@@ -81,7 +81,8 @@ public class StrgShowPanel extends javax.swing.JPanel {
     private void showChart () {
 
         pnlChart.removeAll();
-        pnlChart.add(getLineChart(objOptionStrategy.getPayOffData()));
+        pnlChart.add(getLineChart(objOptionStrategy.getCurrentPayOffData()));
+//        pnlChart.add(getLineChart(objOptionStrategy.getNetPayOffData()));
         pnlChart.revalidate();
         pnlChart.repaint();	
     } 
@@ -103,31 +104,43 @@ public class StrgShowPanel extends javax.swing.JPanel {
     }    
 
     private  XYDataset createDataset(List<Integer> list) {
+        
+        List<Integer> listNet = objOptionStrategy.getNetPayOffData();
+        List<Integer> listCurrent = objOptionStrategy.getCurrentPayOffData();
 
-            var series = new XYSeries("Net");
-                    int nUnderlyingPrice = 8000;
+        var seriesNet = new XYSeries("Net");
+        int nUnderlyingPrice = 8000;
 
-                    for (Integer element : list) {
-                            series.add(nUnderlyingPrice, element.doubleValue());
-                            nUnderlyingPrice += 100;
-                    }	        
+        for (Integer element : listNet) {
+            seriesNet.add(nUnderlyingPrice, element.doubleValue());
+            nUnderlyingPrice += 100;
+        }
 
-            var dataset = new XYSeriesCollection();
-            dataset.addSeries(series);
+        nUnderlyingPrice = 8000;
+        var seriesCurrent = new XYSeries("Current ");
 
-            return dataset;	 
+        for (Integer element : listCurrent) {
+            seriesCurrent.add(nUnderlyingPrice, element.doubleValue());
+            nUnderlyingPrice += 100;
+        }                
+
+        var dataset = new XYSeriesCollection();
+        dataset.addSeries(seriesCurrent);
+        dataset.addSeries(seriesNet);
+
+        return dataset;	 
 
      }	    
     private void showStgShowTableData() {
  
-        for (OptionLeg objOptionLeg : objOptionStrategy.getListOptLeg()) { // For each OptionLeg in the list
+        for (OptionLeg objOptionLeg : objOptionStrategy.getCurrentLstOptLeg()) { // For each OptionLeg in the list
             strategyTableModel.addRowData(objOptionLeg);
         }
         strategyTableModel.fireTableDataChanged();    
          
     }  
     private void showStgPayoffTabelData() {
-        strategyPayOffTableModel.setPlData(objOptionStrategy.getPayOffData());
+        strategyPayOffTableModel.setPlData(objOptionStrategy.getCurrentPayOffData());
     }
      
     /**

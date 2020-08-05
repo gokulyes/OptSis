@@ -29,7 +29,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public class Util {
 
-  public static OptionStrategy getOptionStrategyData(String strStgName) {
+    public static OptionStrategy getOptionStrategyData(String strStgName) {
         Connection connection = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -56,7 +56,7 @@ public class Util {
                         objOptionLeg.setPrice(rs.getInt(5));
                         objOptionLeg.setPostionCovered(rs.getBoolean(6));
                         objOptionLeg.setPostionCoverPrice(rs.getInt(7));
-                        objOptionStrategy.setOptLeg(objOptionLeg);
+                        objOptionStrategy.addOptLeg(objOptionLeg);
 //                      objOptionStrategy.setOptLeg(new OptionLeg(rs.getInt(1), rs.getNString(2), rs.getString(3), rs.getBoolean(4), rs.getInt(5)));  
 
                     }
