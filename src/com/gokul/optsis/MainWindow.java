@@ -6,6 +6,7 @@
 
 package com.gokul.optsis;
 
+import com.gokul.optsis.backtest.StrgBackTestPanel;
 import com.gokul.optsis.panel.StrgShowPanel;
 import com.gokul.optsis.dialog.AddNew;
 import com.gokul.optsis.dialog.StrategyListDialog;
@@ -34,6 +35,7 @@ public class MainWindow extends javax.swing.JFrame {
     private StrgSetting strgSetting;
     private StrgShowPanel stgyShowPanel;
     private StrgSettingPanel strgSettingPanel;
+    private StrgBackTestPanel strgBackTestPanel;
     
 
     
@@ -137,6 +139,7 @@ public class MainWindow extends javax.swing.JFrame {
         pnlIconSetting = new javax.swing.JPanel();
         lblIconSettings = new javax.swing.JLabel();
         pnlLineSettings = new javax.swing.JPanel();
+        btnBackTest = new javax.swing.JButton();
         pnlMenuShow = new javax.swing.JPanel();
         btnHome = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
@@ -194,7 +197,7 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().add(pnlMainHeader, java.awt.BorderLayout.PAGE_START);
 
         pnlMainMenu.setBackground(new java.awt.Color(129, 152, 48));
-        pnlMainMenu.setPreferredSize(new java.awt.Dimension(270, 450));
+        pnlMainMenu.setPreferredSize(new java.awt.Dimension(50, 450));
         pnlMainMenu.setLayout(new java.awt.BorderLayout());
 
         pnlMenuIcon.setBackground(new java.awt.Color(129, 152, 48));
@@ -305,6 +308,15 @@ public class MainWindow extends javax.swing.JFrame {
 
         pnlMenuIcon.add(pnlLineSettings, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 80, -1, 5));
 
+        btnBackTest.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_science_application_50px.png"))); // NOI18N
+        btnBackTest.setPreferredSize(new java.awt.Dimension(50, 50));
+        btnBackTest.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnBackTestMouseClicked(evt);
+            }
+        });
+        pnlMenuIcon.add(btnBackTest, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, -1, -1));
+
         pnlMainMenu.add(pnlMenuIcon, java.awt.BorderLayout.LINE_START);
 
         pnlMenuShow.setBackground(new java.awt.Color(171, 186, 117));
@@ -363,7 +375,7 @@ public class MainWindow extends javax.swing.JFrame {
         pnlHome.setLayout(pnlHomeLayout);
         pnlHomeLayout.setHorizontalGroup(
             pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1146, Short.MAX_VALUE)
+            .addGap(0, 1366, Short.MAX_VALUE)
         );
         pnlHomeLayout.setVerticalGroup(
             pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -378,7 +390,7 @@ public class MainWindow extends javax.swing.JFrame {
         pnlSelect.setLayout(pnlSelectLayout);
         pnlSelectLayout.setHorizontalGroup(
             pnlSelectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1146, Short.MAX_VALUE)
+            .addGap(0, 1366, Short.MAX_VALUE)
         );
         pnlSelectLayout.setVerticalGroup(
             pnlSelectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -454,6 +466,17 @@ public class MainWindow extends javax.swing.JFrame {
         showStgyPanel();
     }//GEN-LAST:event_btnShowMouseClicked
 
+    private void btnBackTestMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBackTestMouseClicked
+       showStrgBackTestPanel(); 
+    }//GEN-LAST:event_btnBackTestMouseClicked
+
+    private void showStrgBackTestPanel() {
+        pnlMainDashboard.removeAll();
+        strgBackTestPanel = new StrgBackTestPanel(this);
+        pnlMainDashboard.add(strgBackTestPanel);  
+        
+        SwingUtilities.updateComponentTreeUI(this);        
+    }
     private void showStrgSettingPanel() {
         pnlMainDashboard.removeAll();
         strgSettingPanel = new StrgSettingPanel( this );
@@ -514,6 +537,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnBackTest;
     private javax.swing.JButton btnHome;
     private javax.swing.JButton btnSelect;
     private javax.swing.JButton btnShow;

@@ -3,22 +3,31 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gokul.optsis.model;
+package com.gokul.optsis.backtest.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class OptionStrategy {
+/**
+ *
+ * @author Gokul WPC
+ */
+public class OptStrg  {
 
     private String strName;
     private int iPL;
-    private List<OptionLeg> listOptLeg = new ArrayList<>();	
-    private List<OptionLeg> currentLstOptLeg = new ArrayList<>();	
+    private List<OptLeg> listOptLeg = new ArrayList<>();	
+    private List<OptLeg> currentLstOptLeg = new ArrayList<>();	
     private int chartStart = 9000;
     private int chartEnd = 12000;
     
-    public OptionStrategy() {
-        System.out.print("\n OptionStrategy: chartStart - " + chartStart);
+    public OptStrg() {
+        System.out.print("\n OptStrg: chartStart - " + chartStart);
     }	
 
 
@@ -30,23 +39,34 @@ public class OptionStrategy {
             this.strName = strName;
     }
     
-     public List<OptionLeg> getListOptLeg() {
-            listOptLeg = new ArrayList<>();
-            OptionLeg obj = new OptionLeg();
-            obj.setID(1);
-            obj.setStrategyName("Test");
-            obj.setSymbol("NIFTY");
-            obj.setPrice(100);
-            obj.setPosition(false);
-            obj.setCovered(false);
-            obj.setCoverPrice(1000);
-            listOptLeg.add(obj);
-            return listOptLeg;
+     public List<OptLeg> getListOptLeg() {
+//        listOptLeg = new ArrayList<>();
+//        try {
+//            
+//            Date dt = new Date();
+//            OptLeg obj = new OptLeg();
+//            obj.setID(1);
+//            obj.setStrategyName("BackTest");
+//
+//            dt = new SimpleDateFormat("dd-MM-yyyy").parse("06-08-2020");
+//            obj.setDateCovered(dt);
+//            obj.setSymbol("NIFTY");
+//            obj.setPrice(100);
+//            obj.setPosition(false);
+//            obj.setCovered(false);
+//            obj.setDateCovered(dt);
+//            obj.setCoverPrice(1000);
+//            listOptLeg.add(obj);
+//            
+//        } catch (ParseException ex) {
+//            Logger.getLogger(OptStrg.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        return listOptLeg;
     }   
 
-    public List<OptionLeg> getCurrentLstOptLeg() {
+    public List<OptLeg> getCurrentLstOptLeg() {
 //            currentLstOptLeg = new ArrayList<>();
-//            OptionLeg obj = new OptionLeg();
+//            OptLeg obj = new OptLeg();
 //            obj.setID(1);
 //            obj.setStrategyName("Test");
 //            obj.setSymbol("Test");
@@ -58,7 +78,7 @@ public class OptionStrategy {
             return currentLstOptLeg;
     }
 
-    public void addOptLeg(OptionLeg optionLeg) {
+    public void addOptLeg(OptLeg optionLeg) {
             optionLeg.setChartStart(getChartStart());
             optionLeg.setChartEnd(getChartEnd());
             this.listOptLeg.add(optionLeg);
@@ -68,18 +88,18 @@ public class OptionStrategy {
             setPL();
     } 
 
-    public void setOptLeg(int id, OptionLeg optionLeg) {
-        List<OptionLeg> listOL = new ArrayList<>();	 
-        for (OptionLeg objOptionLeg : listOptLeg) {
-            if(objOptionLeg.getID() == id) {
+    public void setOptLeg(int id, OptLeg optionLeg) {
+        List<OptLeg> listOL = new ArrayList<>();	 
+        for (OptLeg objOptLeg : listOptLeg) {
+            if(objOptLeg.getID() == id) {
                 listOL.add(optionLeg);
                 
                 if(optionLeg.getPosition()) { // if Positition is covered then remove from current list.
-                    currentLstOptLeg.remove(objOptionLeg);
+                    currentLstOptLeg.remove(objOptLeg);
                 }
                 
             } else {
-                listOL.add(objOptionLeg);
+                listOL.add(objOptLeg);
             }
         }
         this.listOptLeg = listOL;
@@ -93,7 +113,7 @@ public class OptionStrategy {
         List<Integer> listOLPayOff = new ArrayList<>();
 
 
-        for (OptionLeg outerElement : currentLstOptLeg) {
+        for (OptLeg outerElement : currentLstOptLeg) {
 
                 nInnerCounter = 0;
                 for (Integer intElement : outerElement.getPayOffData()) {
@@ -132,12 +152,12 @@ public class OptionStrategy {
 
     public void setPL() {
         int pl = 0;
-        for (OptionLeg objOptionLeg : listOptLeg) { // For each OptionLeg in the list
-            if(objOptionLeg.getCovered()) {
-                if(objOptionLeg.getPosition()) {
-                    pl +=  (objOptionLeg.getCoverPrice() - objOptionLeg.getPrice());
+        for (OptLeg objOptLeg : listOptLeg) { // For each OptLeg in the list
+            if(objOptLeg.getCovered()) {
+                if(objOptLeg.getPosition()) {
+                    pl +=  (objOptLeg.getCoverPrice() - objOptLeg.getPrice());
                 } else {
-                    pl +=  (objOptionLeg.getPrice() - objOptionLeg.getCoverPrice());
+                    pl +=  (objOptLeg.getPrice() - objOptLeg.getCoverPrice());
                 }
             }
         }
@@ -161,7 +181,7 @@ public class OptionStrategy {
 
     @Override
     public String toString() {
-            return "OptionStrategy [strName=" + strName + ", listOptLeg=" + listOptLeg + "]";
+            return "OptStrg [strName=" + strName + ", listOptLeg=" + listOptLeg + "]";
     }
 	
 

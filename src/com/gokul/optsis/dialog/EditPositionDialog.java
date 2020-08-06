@@ -49,12 +49,12 @@ public class EditPositionDialog extends javax.swing.JDialog {
             rdbtnShort.setSelected(true);
         }
         txtPrice.setText(Integer.toString(objOptionLeg.getPrice()));
-        if(objOptionLeg.getPostionCover()){
+        if(objOptionLeg.getCovered()){
             chkCovered.setSelected(true);
         } else {
             chkCovered.setSelected(false);
         }
-        txtCPrice.setText(Integer.toString(objOptionLeg.getPostionCoverPrice()));
+        txtCPrice.setText(Integer.toString(objOptionLeg.getCoverPrice()));
             
     }    
  
@@ -91,8 +91,8 @@ public class EditPositionDialog extends javax.swing.JDialog {
             }
         } 
 
-        this.objOptionLeg.setPostionCovered(true);
-        this.objOptionLeg.setPostionCoverPrice(cPrice);
+        this.objOptionLeg.setCovered(true);
+        this.objOptionLeg.setCoverPrice(cPrice);
 
         mainWindow.updatePosition();
             

@@ -3,17 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gokul.optsis.model;
+package com.gokul.optsis.backtest.model;
 
-
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.swing.JOptionPane;
-
-public class OptionLeg {
-	
-	@Override
+/**
+ *
+ * @author Gokul WPC
+ */
+public class OptLeg {
+        @Override
 	public String toString() {
 		return "OptionLeg [nId=" + nId + ", strName=" + strName + ", strSymbol=" + strSymbol + ", bPosition="
 				+ bPosition + ", nPrice=" + nPrice + ", bCovered=" + bCovered + ", iCoverPrice=" + iCoverPrice + "]";
@@ -22,27 +28,29 @@ public class OptionLeg {
 
 	private int nId;
 	private String strName; 				// Strategy name
+        private Date dtCreated;
 	private String strSymbol;				// Option Symbol
 	private boolean bPosition = true;		// Long: true, Short: false
 	private int nPrice;
 	private boolean bCovered = false;		// Position covered?
+        private Date dtCovered;
 	private int iCoverPrice = 0;			// Position covered at price.
         private int chartStart = 0;
         private int chartEnd = 0;
 	
-	public OptionLeg () {
+	public OptLeg () {
 		
 	}
 
 	
-	public OptionLeg(String strSym, boolean bPosition, int nPrice) {
+	public OptLeg(String strSym, boolean bPosition, int nPrice) {
 		this.strSymbol = strSym;
 		this.bPosition = bPosition;
 		this.nPrice = nPrice;
 
 	}	
 
-	public OptionLeg(int id, String sname, String strSym, boolean bPosition, int nPrice) {
+	public OptLeg(int id, String sname, String strSym, boolean bPosition, int nPrice) {
 		this.nId = id;
 		this.strName = sname;		
 		this.strSymbol = strSym;
@@ -51,7 +59,7 @@ public class OptionLeg {
 
 	}	
 	
-	public OptionLeg(int id, String sname, String strSym, boolean bPosition, int nPrice, boolean bCover, int coverPrice) {
+	public OptLeg(int id, String sname, String strSym, boolean bPosition, int nPrice, boolean bCover, int coverPrice) {
 		this.nId = id;
 		this.strName = sname;				
 		this.strSymbol = strSym;
@@ -192,6 +200,38 @@ public class OptionLeg {
     public int getChartEnd() {
         return this.chartEnd;
     }
+    
+    public void setDateCreated(Date dt) {
+        this.dtCreated = dt;
+    }
+    
+    public Date getDateCreated() {
+        return this.dtCreated;
+    }
+    
+    public void setDateCovered(Date dt){
+        this.dtCovered = dt;
+    }
+    
+    public Date getDateCovered() {
+        return this.dtCovered;
+    }
+ 
+    public String getDateCreatedString() {
+        this.dtCreated = new Date();
+        return convertDateToString(this.dtCreated);
+    }
+    
+    public String getDateCoveredString() {
+        this.dtCovered = new Date();
+        return convertDateToString(this.dtCovered);
+    }   
+    
+    private String convertDateToString(Date dt) {
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        return dateFormat.format(this.dtCreated);
+    }
+    
 
 
 
