@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gokul.optsis;
+package com.gokul.optsis.panel;
 
+import com.gokul.optsis.MainWindow;
 import com.gokul.optsis.model.StrategyTableModel;
 
 import com.gokul.optsis.dialog.EditPositionDialog;
@@ -36,7 +37,6 @@ public class StrgShowPanel extends javax.swing.JPanel {
     private MainWindow mainWindow;   
     private StrategyTableModel strategyTableModel = new StrategyTableModel();
     private StrategyPayOffTableModel strategyPayOffTableModel = new StrategyPayOffTableModel();
-//    private OptionStrategy objOptionStrategy = new OptionStrategy();
     
     /**
      * Creates new form StgyShowPanel
@@ -80,9 +80,7 @@ public class StrgShowPanel extends javax.swing.JPanel {
     private void showChart () {
 
         pnlChart.removeAll();
-//        pnlChart.add(getLineChart(mainWindow.getCurrentStrategy().getCurrentPayOffData()));
         pnlChart.add(getLineChart());        
-//        pnlChart.add(getLineChart(objOptionStrategy.getNetPayOffData()));
         pnlChart.revalidate();
         pnlChart.repaint();	
     } 

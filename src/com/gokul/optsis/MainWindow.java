@@ -6,9 +6,11 @@
 
 package com.gokul.optsis;
 
+import com.gokul.optsis.panel.StrgShowPanel;
 import com.gokul.optsis.dialog.AddNew;
 import com.gokul.optsis.dialog.StrategyListDialog;
 import com.gokul.optsis.model.OptionStrategy;
+import com.gokul.optsis.model.StrgSetting;
 import com.gokul.optsis.util.Util;
 
 import java.awt.Color;
@@ -29,27 +31,49 @@ public class MainWindow extends javax.swing.JFrame {
     private String strStgName = "Current Strategy: Not Selected  ";
     private String strStgPL = "Current P/L        :";
     private OptionStrategy objOptionStrategy;
+    private StrgSetting strgSetting;
     private StrgShowPanel stgyShowPanel;
+    private StrgSettingPanel strgSettingPanel;
+    
 
     
 
     /** Creates new form MainWindow */
     public MainWindow() {
         initComponents();
+        
+        //If not exist create new tables.
+        Util.createNewStrategyTable();
+        Util.createNewStrategySettingTable();
+        
+        //Get Strgsetting data
+        strgSetting = Util.getStrgSettingData();
+        
+    }
+    
+    public StrgSetting getStrgSetting() {
+        return this.strgSetting;
+    }
+    
+    public void setStrgSetting(StrgSetting obj) {
+        this.strgSetting = obj;
+        objOptionStrategy.setChartSetting(obj.getChartStart(), obj.getChartEnd());
     }
     
     public void updatePosition() {
-       selectStrategy(objOptionStrategy.getStrName());
+       selectStrategy(strgSetting);
        showStgyPanel();
     }
     
     public void setCurrentStrategy(OptionStrategy obj) {
         this.objOptionStrategy = obj;
     }
-    
-    public void selectStrategy(String strName) {
-        strStgName = strName;
+ 
+    public void selectStrategy(StrgSetting setting) {
+        strgSetting = setting;
+        strStgName = strgSetting.getName();
         this.objOptionStrategy = Util.getOptionStrategyData(strStgName);
+        this.objOptionStrategy.setChartSetting(strgSetting.getChartStart(), strgSetting.getChartEnd());
         
         lblCurrentStgName.setText("Current Strategy: " + strStgName + "   ");
         lblCurrentStgPL.setText("Current P/L        : " + objOptionStrategy.getPL());
@@ -196,6 +220,7 @@ public class MainWindow extends javax.swing.JFrame {
         pnlIconList.setPreferredSize(new java.awt.Dimension(40, 40));
 
         lblIconList.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/list.png"))); // NOI18N
+        lblIconList.setAlignmentY(0.0F);
         lblIconList.setPreferredSize(new java.awt.Dimension(40, 40));
         lblIconList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -213,25 +238,27 @@ public class MainWindow extends javax.swing.JFrame {
         pnlIconList.setLayout(pnlIconListLayout);
         pnlIconListLayout.setHorizontalGroup(
             pnlIconListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlIconListLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlIconListLayout.createSequentialGroup()
                 .addComponent(lblIconList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         pnlIconListLayout.setVerticalGroup(
             pnlIconListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlIconListLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlIconListLayout.createSequentialGroup()
                 .addComponent(lblIconList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        pnlMenuIcon.add(pnlIconList, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, -1));
+        pnlMenuIcon.add(pnlIconList, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 20, -1, -1));
 
         pnlIconSetting.setBackground(new java.awt.Color(129, 152, 48));
         pnlIconSetting.setPreferredSize(new java.awt.Dimension(40, 40));
 
         lblIconSettings.setBackground(new java.awt.Color(129, 152, 48));
+        lblIconSettings.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblIconSettings.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/settings.png"))); // NOI18N
         lblIconSettings.setToolTipText("");
+        lblIconSettings.setAlignmentY(0.0F);
         lblIconSettings.setPreferredSize(new java.awt.Dimension(40, 40));
         lblIconSettings.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -249,18 +276,18 @@ public class MainWindow extends javax.swing.JFrame {
         pnlIconSetting.setLayout(pnlIconSettingLayout);
         pnlIconSettingLayout.setHorizontalGroup(
             pnlIconSettingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlIconSettingLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlIconSettingLayout.createSequentialGroup()
                 .addComponent(lblIconSettings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         pnlIconSettingLayout.setVerticalGroup(
             pnlIconSettingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlIconSettingLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlIconSettingLayout.createSequentialGroup()
                 .addComponent(lblIconSettings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        pnlMenuIcon.add(pnlIconSetting, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
+        pnlMenuIcon.add(pnlIconSetting, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 90, -1, -1));
 
         pnlLineSettings.setBackground(new java.awt.Color(129, 152, 48));
         pnlLineSettings.setPreferredSize(new java.awt.Dimension(50, 5));
@@ -284,6 +311,8 @@ public class MainWindow extends javax.swing.JFrame {
         pnlMenuShow.setPreferredSize(new java.awt.Dimension(179, 450));
         pnlMenuShow.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        btnHome.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_home_20px.png"))); // NOI18N
+        btnHome.setMnemonic('H');
         btnHome.setText("Home");
         btnHome.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -292,6 +321,8 @@ public class MainWindow extends javax.swing.JFrame {
         });
         pnlMenuShow.add(btnHome, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 20, 140, -1));
 
+        btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_add_database_20px.png"))); // NOI18N
+        btnAdd.setMnemonic('A');
         btnAdd.setText("Add");
         btnAdd.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -300,6 +331,8 @@ public class MainWindow extends javax.swing.JFrame {
         });
         pnlMenuShow.add(btnAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 110, 140, -1));
 
+        btnSelect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_select_20px.png"))); // NOI18N
+        btnSelect.setMnemonic('e');
         btnSelect.setText("Select");
         btnSelect.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -308,6 +341,8 @@ public class MainWindow extends javax.swing.JFrame {
         });
         pnlMenuShow.add(btnSelect, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 50, 140, -1));
 
+        btnShow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_showing_video_frames_20px.png"))); // NOI18N
+        btnShow.setMnemonic('S');
         btnShow.setText("Show");
         btnShow.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -379,7 +414,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_lblIconListMouseExited
 
     private void lblIconSettingsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblIconSettingsMouseClicked
-        // TODO add your handling code here:
+        showStrgSettingPanel();
     }//GEN-LAST:event_lblIconSettingsMouseClicked
 
     private void lblIconSettingsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblIconSettingsMouseEntered
@@ -391,15 +426,14 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_lblIconSettingsMouseExited
 
     private void btnHomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnHomeMouseClicked
-        pnlMainDashboard.removeAll();
-        pnlMainDashboard.add(pnlHome);
-        
-        showHideMenu(pnlMainMenu,  Boolean.FALSE);
+        showHomePanel();
     }//GEN-LAST:event_btnHomeMouseClicked
 
     private void btnSelectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSelectMouseClicked
         pnlMainDashboard.removeAll();
         pnlMainDashboard.add(pnlSelect);
+        
+        strgSetting = Util.getStrgSettingData(); // Get StrgSetting data from database.
         
         showHideMenu(pnlMainMenu,  Boolean.FALSE);
         StrategyListDialog stgListDiag = new StrategyListDialog(this, true, this);
@@ -408,9 +442,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSelectMouseClicked
 
     private void btnAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMouseClicked
-//        pnlMainDashboard.removeAll();
-//        pnlMainDashboard.add(pnlShow);
-        
+       
         showHideMenu(pnlMainMenu,  Boolean.FALSE);
         
         AddNew andialog = new AddNew(this, true, this);
@@ -422,6 +454,20 @@ public class MainWindow extends javax.swing.JFrame {
         showStgyPanel();
     }//GEN-LAST:event_btnShowMouseClicked
 
+    private void showStrgSettingPanel() {
+        pnlMainDashboard.removeAll();
+        strgSettingPanel = new StrgSettingPanel( this );
+        pnlMainDashboard.add(strgSettingPanel);  
+        
+        SwingUtilities.updateComponentTreeUI(this);
+    }
+    private void showHomePanel() {
+        pnlMainDashboard.removeAll();
+        pnlMainDashboard.add(pnlHome);
+        
+        showHideMenu(pnlMainMenu,  Boolean.FALSE);       
+    }
+    
     private void showStgyPanel() {
        
         pnlMainDashboard.removeAll();

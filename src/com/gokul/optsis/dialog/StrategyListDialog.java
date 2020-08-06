@@ -6,12 +6,16 @@
 package com.gokul.optsis.dialog;
 
 import com.gokul.optsis.MainWindow;
+import com.gokul.optsis.model.OptionLeg;
+import com.gokul.optsis.model.StrgSetting;
 import java.awt.Frame;
 import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -25,6 +29,7 @@ public class StrategyListDialog extends javax.swing.JDialog {
     private Connection connection ;
     private DefaultTableModel ListTableModel;
     private MainWindow mainWindow;
+    private List<StrgSetting> listStrgSetting = new ArrayList<>();
 
     /**
      * Creates new form StrategyListDialog
@@ -91,6 +96,8 @@ public class StrategyListDialog extends javax.swing.JDialog {
 
         getContentPane().add(pnlDiagFooter, java.awt.BorderLayout.PAGE_END);
 
+        btnStgSelect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_select_20px.png"))); // NOI18N
+        btnStgSelect.setMnemonic('S');
         btnStgSelect.setText("Select");
         btnStgSelect.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -98,10 +105,17 @@ public class StrategyListDialog extends javax.swing.JDialog {
             }
         });
 
+        btnDigClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_shutdown_20px.png"))); // NOI18N
+        btnDigClose.setMnemonic('C');
         btnDigClose.setText("Close");
         btnDigClose.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnDigCloseMouseClicked(evt);
+            }
+        });
+        btnDigClose.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                btnDigCloseKeyPressed(evt);
             }
         });
 
@@ -127,27 +141,21 @@ public class StrategyListDialog extends javax.swing.JDialog {
                 .addContainerGap(15, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlTableLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnDigClose)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnStgSelect)
-                .addGap(126, 126, 126))
-            .addGroup(pnlTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(pnlTableLayout.createSequentialGroup()
-                    .addGap(118, 118, 118)
-                    .addComponent(btnDigClose)
-                    .addContainerGap(223, Short.MAX_VALUE)))
+                .addGap(121, 121, 121))
         );
         pnlTableLayout.setVerticalGroup(
             pnlTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlTableLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
-                .addComponent(btnStgSelect)
-                .addGap(123, 123, 123))
-            .addGroup(pnlTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlTableLayout.createSequentialGroup()
-                    .addContainerGap(242, Short.MAX_VALUE)
+                .addGap(41, 41, 41)
+                .addGroup(pnlTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnDigClose)
-                    .addGap(124, 124, 124)))
+                    .addComponent(btnStgSelect))
+                .addGap(111, 111, 111))
         );
 
         getContentPane().add(pnlTable, java.awt.BorderLayout.CENTER);
@@ -161,9 +169,13 @@ public class StrategyListDialog extends javax.swing.JDialog {
 
     private void btnStgSelectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStgSelectMouseClicked
         int iSelectedRow = tblStrgList.getSelectedRow();
-        mainWindow.selectStrategy(ListTableModel.getValueAt(iSelectedRow, 0).toString());
-//        MainWindow.selectStrategy(ListTableModel.getValueAt(iSelectedRow, 0).toString());
+        mainWindow.selectStrategy(listStrgSetting.get(iSelectedRow));        
+
     }//GEN-LAST:event_btnStgSelectMouseClicked
+
+    private void btnDigCloseKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnDigCloseKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnDigCloseKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -176,14 +188,15 @@ public class StrategyListDialog extends javax.swing.JDialog {
     private javax.swing.JTable tblStrgList;
     // End of variables declaration//GEN-END:variables
 
-    private void showTableData() {
+    
+  private void showTableData() {
         
-       
         PreparedStatement stmt = null;
         ResultSet rs = null;
         int nColumnCnt = 1; //
+        StrgSetting strgSetting = new StrgSetting();
 
-        String strSQL =  "Select distinct(name) from STRATEGY"; // Get all Distinct Strategy names from table.
+        String strSQL =  "Select * from STRGSETTINGS"; // Get all Distinct Strategy names from table.
 
         try {
                 Class.forName("org.h2.Driver");
@@ -199,10 +212,12 @@ public class StrategyListDialog extends javax.swing.JDialog {
 
                     while(rs.next()) {
 
-                            rowData[0] = rs.getString(1);
+                            rowData[0] = rs.getString(2);
                             ListTableModel.addRow(rowData);
                             ListTableModel.fireTableDataChanged();
                             System.out.print( "\n" + "Name: " + rowData[0]); 
+                            
+                            listStrgSetting.add(new StrgSetting(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getInt(4)));
 
                     }
 
@@ -235,8 +250,9 @@ public class StrategyListDialog extends javax.swing.JDialog {
 
                 stmt = null;
             }
-        }  
+        } 
         System.out.print( "\n" + "showTableData: Finish" ); 
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+
+    }    
+
 }

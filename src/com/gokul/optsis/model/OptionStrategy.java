@@ -138,6 +138,11 @@ public class OptionStrategy {
     public int getChartEnd() {
         return this.chartEnd ;
     }
+    
+    public void setChartSetting(int start, int end){
+        this.chartStart = start;
+        this.chartEnd = end;
+    }
 
 
     @Override
