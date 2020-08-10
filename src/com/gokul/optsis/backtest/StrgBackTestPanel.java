@@ -10,8 +10,19 @@ import com.gokul.optsis.backtest.dialog.AddNewLegDialog;
 import com.gokul.optsis.backtest.model.PositionTableModel;
 import com.gokul.optsis.backtest.model.OptLeg;
 import com.gokul.optsis.backtest.model.OptStrg;
+import com.gokul.optsis.backtest.model.OptionChain;
+import com.gokul.optsis.backtest.model.OptionPrice;
+import com.gokul.optsis.model.OptionChainTableModel;
 import com.gokul.optsis.util.Util;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -26,7 +37,9 @@ import org.jfree.data.xy.XYSeriesCollection;
 public class StrgBackTestPanel extends javax.swing.JPanel {
     
     private PositionTableModel positionTableModel = new PositionTableModel();
+    private OptionChainTableModel optionChainTableModel = new OptionChainTableModel();
     private OptStrg objOptStrg =  new OptStrg();
+    private OptionChain optionChain = new OptionChain();
     private MainWindow mainwindow;
 
     /**
@@ -38,7 +51,7 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
         
         initPnl();
         showPositionTableData();
-   
+        showOptionChainTableData();
         
     }
 
@@ -55,17 +68,21 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        dtPicker = new com.toedter.calendar.JDateChooser();
         pnlContent = new javax.swing.JPanel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(300, 0), new java.awt.Dimension(300, 0), new java.awt.Dimension(300, 32767));
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPosition = new javax.swing.JTable();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(500, 0), new java.awt.Dimension(500, 0), new java.awt.Dimension(500, 32767));
         pnlChart = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblOptionChain = new javax.swing.JTable();
 
-        setPreferredSize(new java.awt.Dimension(1200, 715));
+        setPreferredSize(new java.awt.Dimension(1800, 715));
         setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(129, 152, 48));
+        pnlHeader.setPreferredSize(new java.awt.Dimension(1800, 109));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setText("Strategy Back Test");
@@ -86,6 +103,14 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
             }
         });
 
+        dtPicker.setDateFormatString("yyyy-MM-dd");
+        dtPicker.setDate(new Date());
+        dtPicker.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                dtPickerPropertyChange(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
         pnlHeader.setLayout(pnlHeaderLayout);
         pnlHeaderLayout.setHorizontalGroup(
@@ -96,9 +121,11 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
                     .addGroup(pnlHeaderLayout.createSequentialGroup()
                         .addComponent(jButton1)
                         .addGap(26, 26, 26)
-                        .addComponent(jButton2))
+                        .addComponent(jButton2)
+                        .addGap(126, 126, 126)
+                        .addComponent(dtPicker, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel1))
-                .addContainerGap(950, Short.MAX_VALUE))
+                .addContainerGap(1320, Short.MAX_VALUE))
         );
         pnlHeaderLayout.setVerticalGroup(
             pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -106,14 +133,17 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
-                .addGroup(pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                .addGroup(pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton1)
+                        .addComponent(jButton2))
+                    .addComponent(dtPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(21, 21, 21))
         );
 
         add(pnlHeader, java.awt.BorderLayout.PAGE_START);
 
+        pnlContent.setPreferredSize(new java.awt.Dimension(1800, 601));
         pnlContent.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         filler1.setBorder(new javax.swing.border.LineBorder(java.awt.SystemColor.activeCaption, 1, true));
@@ -130,6 +160,11 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
         pnlChart.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         pnlContent.add(pnlChart, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 20, 480, 420));
 
+        tblOptionChain.setModel(optionChainTableModel);
+        jScrollPane2.setViewportView(tblOptionChain);
+
+        pnlContent.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 10, -1, -1));
+
         add(pnlContent, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -140,28 +175,51 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-       Util.insertIntoHistoricalTable();
+       Util.insertIntoHDataTable();
     }//GEN-LAST:event_jButton2MouseClicked
+
+    private void dtPickerPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dtPickerPropertyChange
+        if ("date".equals(evt.getPropertyName())) {
+            System.out.println(evt.getPropertyName()
+                + ": " + (Date) evt.getNewValue());
+            showOptionChain();
+        }
+    }//GEN-LAST:event_dtPickerPropertyChange
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JDateChooser dtPicker;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel pnlChart;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JPanel pnlHeader;
+    private javax.swing.JTable tblOptionChain;
     private javax.swing.JTable tblPosition;
     // End of variables declaration//GEN-END:variables
 
     private void initPnl() {
-        objOptStrg = Util.getStrgTestData();
-        positionTableModel = (PositionTableModel) tblPosition.getModel();
-        showChart();
+            objOptStrg = Util.getStrgTestData();
+            positionTableModel = (PositionTableModel) tblPosition.getModel();
+  
+            showChart();
+
     }
+    
+    private void showOptionChain() {
+            
+            optionChain = Util.getHistoricData(dtPicker.getDate());
+            optionChainTableModel = (OptionChainTableModel) tblOptionChain.getModel();
+
+            showOptionChainTableData();
+    
+    }
+    
     private void showPositionTableData() {
          for (OptLeg objOptLeg : objOptStrg.getListOptLeg()) { // For each OptLeg in the list
             positionTableModel.addRowData(objOptLeg);
@@ -221,4 +279,13 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
         return dataset;	 
 
      }
+
+    private void showOptionChainTableData() {
+        optionChainTableModel.clearAllRows();
+        
+        for (OptionPrice objOptionPrice : optionChain.getListOptionPrice()) { // For each OptLeg in the list
+            optionChainTableModel.addRowData(objOptionPrice);
+        }
+        optionChainTableModel.fireTableDataChanged();  
+    }
 }

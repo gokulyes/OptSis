@@ -7,9 +7,12 @@ package com.gokul.optsis.util;
 
 
 import com.gokul.optsis.MainWindow;
+import com.gokul.optsis.backtest.model.HData;
 import com.gokul.optsis.backtest.model.HistoricalData;
 import com.gokul.optsis.backtest.model.OptLeg;
 import com.gokul.optsis.backtest.model.OptStrg;
+import com.gokul.optsis.backtest.model.OptionChain;
+import com.gokul.optsis.backtest.model.OptionPrice;
 import com.gokul.optsis.model.OptionLeg;
 import com.gokul.optsis.model.OptionStrategy;
 import com.gokul.optsis.model.StrgSetting;
@@ -23,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -428,6 +432,70 @@ public class Util {
         }
         return objOptStrg;
     } 
+    
+    public static OptionChain getHistoricData(Date date) {
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        java.sql.Date sd = new java.sql.Date(date.getTime());
+        String strSQL =  "Select * from HISTORICDATA where date ='" + sd + "'";
+        OptionChain optionChain = new OptionChain();
+        OptionPrice optionPrice;
+        
+         try {
+                Class.forName("org.h2.Driver");
+                connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
+                stmt = connection.prepareStatement(strSQL);
+                rs = stmt.executeQuery();
+                
+                System.out.print( "\n" + "strSQL: " + strSQL); 
+                
+                if(rs != null) {
+
+                    while(rs.next()) {
+                        optionPrice = new OptionPrice();
+                        optionPrice.setCe(rs.getFloat(5));
+                        optionPrice.setStrike(rs.getInt(4));
+                        optionPrice.setPe(rs.getFloat(6));
+   
+                        optionChain.addRow(optionPrice);
+//                      objOptStrg.setOptLeg(new OptLeg(rs.getInt(1), rs.getNString(2), rs.getString(3), rs.getBoolean(4), rs.getInt(5)));  
+
+                    }
+
+                }
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+//            System.out.println("SQLState: " + ex.);
+//            System.out.println("VendorError: " + ex.getErrorCode());
+            ex.printStackTrace();
+        } 
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+//
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqlEx) { } // ignore
+
+                rs = null;
+            }
+
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) { } // ignore
+
+                stmt = null;
+            }
+        }
+        return optionChain;
+    } 
+    
 
     public static List<HistoricalData> importCSVtoDatabase() {
         String line = "";  
@@ -514,5 +582,94 @@ public class Util {
             }
         }        
     }
+
+    public static List<HData> importCSVtoHDatabase() {
+        String line = "";  
+        String splitBy = ",";  
+        List<HData> listhistoricalData = new ArrayList<>();
+        try   
+        {  
+            //parsing a CSV file into BufferedReader class constructor  
+            BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\Gokul WPC\\Downloads\\NTradeBook_2020 - Sheet5.csv"));  
+            while ((line = br.readLine()) != null)   //returns a Boolean value  
+            {  
+                String[] data = line.split(splitBy);    // use comma as separator  
+                listhistoricalData.add(new HData(data[0], data[1], data[2], data[3], data[4], data[5]));
+                System.out.println("Date [Date=" + data[0] + ", Symbol=" + data[1] + ", price=" + data[2] +"]");  
+            }  
+        }   
+        catch (IOException e)   
+        {  
+            e.printStackTrace();  
+        }
+        
+        System.out.print("\nimportCSVtoHDatabase");
+        return listhistoricalData;
+    }
+    
+    public static void insertIntoHDataTable() {
+        
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        int nColumnCnt = 4; //
+        List<HData> HDataList = importCSVtoHDatabase();
+//      Create table  HISTORICDATA (symbol varchar2(20), date date, expiry date,strike int, ce float(2), pe float(2))  
+        String insert_into_strategy = "insert into HISTORICDATA (symbol, date, expiry, strike, ce, pe)values ( ?, ?, ?, ?, ?, ?)";
+
+        try {
+                Class.forName("org.h2.Driver");
+                connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
+                stmt = connection.prepareStatement(insert_into_strategy);
+                
+                for(HData hData: HDataList) {
+                    System.out.print("\n" + hData.toString());
+                    stmt.setString(1, hData.getSymbol());
+                    stmt.setDate(2, new java.sql.Date(hData.getDate().getTime()));
+                    stmt.setDate(3, new java.sql.Date(hData.getExpiry().getTime()));
+                    stmt.setInt(4, hData.getStrike());
+                    stmt.setFloat(5, hData.getCe());  
+                    stmt.setFloat(6, hData.getPe());  
+                   
+                    if (stmt.executeUpdate() > 0) {
+//                           JOptionPane.showMessageDialog(null, "New Strategy name inserted into table");
+                           Object rowData[] = new Object[nColumnCnt] ;
+                           rowData[0] =  hData.getSymbol();
+                           rowData[1] = hData.getDate().getTime();
+                           rowData[2] = hData.getExpiry().getTime();
+
+                           System.out.print("\n" + rowData.toString());
+                    }                    
+                }
+
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+    //            System.out.println("SQLState: " + ex.);
+    //            System.out.println("VendorError: " + ex.getErrorCode());
+            ex.printStackTrace();
+        } 
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+    //
+    //            if (rs != null) {
+    //                try {
+    //                    rs.close();
+    //                } catch (SQLException sqlEx) { } // ignore
+    //
+    //                rs = null;
+    //            }
+
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) { } // ignore
+
+                stmt = null;
+            }
+        }        
+    }    
 }
 
