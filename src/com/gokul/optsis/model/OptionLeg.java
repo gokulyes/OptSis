@@ -6,8 +6,13 @@
 package com.gokul.optsis.model;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 
@@ -103,6 +108,16 @@ public class OptionLeg {
 			return "";
 		}
 	}
+        
+        public boolean getTypeBoolean() {
+            if(this.strSymbol.substring(this.strSymbol.length() -2) == "CE") {
+                    return false; // 0:Call ; 1: Put
+            } else if(this.strSymbol.substring(this.strSymbol.length() -2) == "PE") {	
+                    return true;
+            } else {
+                    return false;
+            }            
+        }
 
 	public int getPrice() {
 		return nPrice;
@@ -191,6 +206,23 @@ public class OptionLeg {
     
     public int getChartEnd() {
         return this.chartEnd;
+    }
+    
+    public Date getExpiry() {
+       // NIFTY2030JUL10000CE
+       
+        Date dt = null;
+        try {
+            dt = new SimpleDateFormat("yyddMMM").parse(strSymbol.substring(5, 12));
+        } catch (ParseException ex) {
+            Logger.getLogger(OptionLeg.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return dt;
+
+    }
+    
+    public int getStrike() {
+       return strSymbol.length() > 12 ? Integer.parseInt(strSymbol.substring(0, strSymbol.length()-2).substring(12)) : 0; 
     }
 
 

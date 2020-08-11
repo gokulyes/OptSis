@@ -7,6 +7,8 @@ package com.gokul.optsis.backtest;
 
 import com.gokul.optsis.MainWindow;
 import com.gokul.optsis.backtest.dialog.AddNewLegDialog;
+import com.gokul.optsis.backtest.model.BackTestLeg;
+import com.gokul.optsis.backtest.model.BackTestStrategy;
 import com.gokul.optsis.backtest.model.PositionTableModel;
 import com.gokul.optsis.backtest.model.OptLeg;
 import com.gokul.optsis.backtest.model.OptStrg;
@@ -14,9 +16,6 @@ import com.gokul.optsis.backtest.model.OptionChain;
 import com.gokul.optsis.backtest.model.OptionPrice;
 import com.gokul.optsis.model.OptionChainTableModel;
 import com.gokul.optsis.util.Util;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,11 +40,14 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
     private OptStrg objOptStrg =  new OptStrg();
     private OptionChain optionChain = new OptionChain();
     private MainWindow mainwindow;
+    private Date dtBackTest;
+    private BackTestStrategy backTestStrategy = new BackTestStrategy();
 
     /**
      * Creates new form StrgBackTestPanel
      */
     public StrgBackTestPanel(MainWindow window) {
+       
         initComponents();
         this.mainwindow = window;
         
@@ -180,9 +182,12 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
 
     private void dtPickerPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dtPickerPropertyChange
         if ("date".equals(evt.getPropertyName())) {
-            System.out.println(evt.getPropertyName()
-                + ": " + (Date) evt.getNewValue());
+//            System.out.println(evt.getPropertyName()
+//                + ": " + (Date) evt.getNewValue());
+            dtBackTest  = (Date) evt.getNewValue();
             showOptionChain();
+            showBackTestSeries();
+            showChart();
         }
     }//GEN-LAST:event_dtPickerPropertyChange
 
@@ -221,7 +226,7 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
     }
     
     private void showPositionTableData() {
-         for (OptLeg objOptLeg : objOptStrg.getListOptLeg()) { // For each OptLeg in the list
+        for (OptLeg objOptLeg : objOptStrg.getListOptLeg()) { // For each OptLeg in the list
             positionTableModel.addRowData(objOptLeg);
         }
         positionTableModel.fireTableDataChanged();        
@@ -255,6 +260,7 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
         
         List<Integer> listNet = objOptStrg.getNetPayOffData();
         List<Integer> listCurrent = objOptStrg.getCurrentPayOffData();
+        List<Float> listHistorical = backTestStrategy.getCurrentPayOffData();
 
         var seriesNet = new XYSeries("Net");
         int nUnderlyingPrice = objOptStrg.getChartStart();
@@ -270,11 +276,20 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
         for (Integer element : listCurrent) {
             seriesCurrent.add(nUnderlyingPrice, element.doubleValue());
             nUnderlyingPrice += 100;
-        }                
+        } 
+        
+        nUnderlyingPrice = objOptStrg.getChartStart();
+        var seriesHistorical = new XYSeries("Historical ");
+
+        for (Float element : listHistorical) {
+            seriesHistorical.add(nUnderlyingPrice, element.doubleValue());
+            nUnderlyingPrice += 100;
+        }         
 
         var dataset = new XYSeriesCollection();
         dataset.addSeries(seriesCurrent);
         dataset.addSeries(seriesNet);
+        dataset.addSeries(seriesHistorical);
 
         return dataset;	 
 
@@ -287,5 +302,20 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
             optionChainTableModel.addRowData(objOptionPrice);
         }
         optionChainTableModel.fireTableDataChanged();  
+    }
+
+    private void showBackTestSeries() {
+        backTestStrategy = new BackTestStrategy();
+        BackTestLeg backTestLeg =  new BackTestLeg();
+            for (OptLeg objOptLeg : objOptStrg.getListOptLeg()) { // For each OptLeg in the list
+                backTestLeg = Util.getHistoricPrice(dtBackTest, objOptLeg);
+
+                if(backTestLeg != null) {
+                    backTestStrategy.addRow(backTestLeg);
+                    objOptStrg.setHistPrice(objOptLeg.getID(), backTestLeg.getPrice());
+                }
+
+            }
+
     }
 }

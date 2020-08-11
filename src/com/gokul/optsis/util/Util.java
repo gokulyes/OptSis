@@ -7,6 +7,7 @@ package com.gokul.optsis.util;
 
 
 import com.gokul.optsis.MainWindow;
+import com.gokul.optsis.backtest.model.BackTestLeg;
 import com.gokul.optsis.backtest.model.HData;
 import com.gokul.optsis.backtest.model.HistoricalData;
 import com.gokul.optsis.backtest.model.OptLeg;
@@ -112,7 +113,7 @@ public class Util {
             } else {
                 stmt = connection.prepareStatement(strSQL);
                 stmt.executeUpdate();
-                System.out.print("\n STRGSETTINGS Table created\n");                
+//                System.out.print("\n STRGSETTINGS Table created\n");                
             }
   
         } catch (ClassNotFoundException | SQLException ex) {
@@ -223,7 +224,7 @@ public class Util {
                 stmt = connection.prepareStatement(strSQL);
                 rs = stmt.executeQuery();
                 
-                System.out.print( "\n" + "strSQL: " + strSQL); 
+//                System.out.print( "\n" + "strSQL: " + strSQL); 
                 
                 if(rs != null) {
                     while(rs.next()) {
@@ -380,7 +381,7 @@ public class Util {
                 stmt = connection.prepareStatement(strSQL);
                 rs = stmt.executeQuery();
                 
-                System.out.print( "\n" + "strSQL: " + strSQL); 
+//                System.out.print( "\n" + "strSQL: " + strSQL); 
                 
                 if(rs != null) {
                     objOptStrg.setStrName("BackTest");
@@ -448,7 +449,7 @@ public class Util {
                 stmt = connection.prepareStatement(strSQL);
                 rs = stmt.executeQuery();
                 
-                System.out.print( "\n" + "strSQL: " + strSQL); 
+//                System.out.print( "\n" + "strSQL: " + strSQL); 
                 
                 if(rs != null) {
 
@@ -495,6 +496,78 @@ public class Util {
         }
         return optionChain;
     } 
+    
+    public static BackTestLeg getHistoricPrice(Date date, OptLeg optionLeg) {
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        java.sql.Date sd = new java.sql.Date(date.getTime());
+        boolean type = optionLeg.getTypeBoolean();
+        java.sql.Date ed = new java.sql.Date(optionLeg.getExpiry().getTime());
+        int strike = optionLeg.getStrike();
+        
+        String strSQL =  "Select * from HISTORICDATA where date ='" + sd + "' and expiry = '" + ed + "' and strike =" + strike;
+
+        BackTestLeg backTestLeg = null;
+        
+         try {
+                Class.forName("org.h2.Driver");
+                connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
+                stmt = connection.prepareStatement(strSQL);
+                rs = stmt.executeQuery();
+                
+//                System.out.print( "\n" + "strSQL: " + strSQL); 
+                
+                if(rs != null) {
+
+                    while(rs.next()) {
+                        backTestLeg = new BackTestLeg();
+                        backTestLeg.setType(type);
+                        backTestLeg.setPosition(optionLeg.getPosition());
+                        backTestLeg.setStrike(strike);
+                        if (!type) // False: Call, True: Put
+                            backTestLeg.setPrice(rs.getFloat(5));
+                        else
+                            backTestLeg.setPrice(rs.getFloat(6));
+   
+
+//                      objOptStrg.setOptLeg(new OptLeg(rs.getInt(1), rs.getNString(2), rs.getString(3), rs.getBoolean(4), rs.getInt(5)));  
+
+                    }
+
+                }
+
+        } catch (ClassNotFoundException | SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+//            System.out.println("SQLState: " + ex.);
+//            System.out.println("VendorError: " + ex.getErrorCode());
+            ex.printStackTrace();
+        } 
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+//
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqlEx) { } // ignore
+
+                rs = null;
+            }
+
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) { } // ignore
+
+                stmt = null;
+            }
+        }
+
+        return backTestLeg;
+    }    
     
 
     public static List<HistoricalData> importCSVtoDatabase() {

@@ -37,6 +37,8 @@ public class OptLeg {
 	private int iCoverPrice = 0;			// Position covered at price.
         private int chartStart = 0;
         private int chartEnd = 0;
+        private float histPrice =0;
+        
 	
 	public OptLeg () {
 		
@@ -47,6 +49,7 @@ public class OptLeg {
 		this.strSymbol = strSym;
 		this.bPosition = bPosition;
 		this.nPrice = nPrice;
+                this.histPrice = nPrice;
 
 	}	
 
@@ -56,6 +59,7 @@ public class OptLeg {
 		this.strSymbol = strSym;
 		this.bPosition = bPosition;
 		this.nPrice = nPrice;
+                this.histPrice = nPrice;
 
 	}	
 	
@@ -67,6 +71,7 @@ public class OptLeg {
 		this.nPrice = nPrice;
 		this.bCovered = bCover;
 		this.iCoverPrice = coverPrice;
+                this.histPrice = nPrice;
 
 	}
 	
@@ -111,6 +116,15 @@ public class OptLeg {
 			return "";
 		}
 	}
+        public boolean getTypeBoolean() {
+//            System.out.print("\n getTypeBoolean: " + this.strSymbol.substring(this.strSymbol.length() -2) );
+            if(this.strSymbol.substring(this.strSymbol.length() -2).equals("CE")) {
+                    return false; // 0:Call ; 1: Put
+            } else {	
+                    return true;
+            } 
+            
+        }        
 
 	public int getPrice() {
 		return nPrice;
@@ -231,7 +245,30 @@ public class OptLeg {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         return dateFormat.format(this.dtCreated);
     }
+    public Date getExpiry() {
+       // NIFTY2030JUL10000CE
+       
+        Date dt = null;
+        try {
+            dt = new SimpleDateFormat("yyddMMM").parse(strSymbol.substring(5, 12));
+        } catch (ParseException ex) {
+            Logger.getLogger(OptLeg.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return dt;
+
+    }
     
+    public int getStrike() {
+       return strSymbol.length() > 12 ? Integer.parseInt(strSymbol.substring(0, strSymbol.length()-2).substring(12)) : 0; 
+    }    
+
+    public float getHistPrice() {
+        return histPrice;
+    }
+
+    public void setHistPrice(float histPrice) {
+        this.histPrice = histPrice;
+    }
 
 
 

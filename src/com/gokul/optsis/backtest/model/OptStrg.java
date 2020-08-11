@@ -27,7 +27,7 @@ public class OptStrg  {
     private int chartEnd = 12000;
     
     public OptStrg() {
-        System.out.print("\n OptStrg: chartStart - " + chartStart);
+//        System.out.print("\n OptStrg: chartStart - " + chartStart);
     }	
 
 
@@ -81,6 +81,7 @@ public class OptStrg  {
     public void addOptLeg(OptLeg optionLeg) {
             optionLeg.setChartStart(getChartStart());
             optionLeg.setChartEnd(getChartEnd());
+            optionLeg.setHistPrice(optionLeg.getPrice());
             this.listOptLeg.add(optionLeg);
             if (!optionLeg.getCovered()) { // If not covered. Add to current list.
               currentLstOptLeg.add(optionLeg);
@@ -176,6 +177,15 @@ public class OptStrg  {
     public void setChartSetting(int start, int end){
         this.chartStart = start;
         this.chartEnd = end;
+    }
+    
+    public void setHistPrice(int id, float price) {
+        for (OptLeg objOptLeg : listOptLeg) {
+            if(objOptLeg.getID() == id) {
+                objOptLeg.setHistPrice(price);
+            }
+                
+        }
     }
 
 
