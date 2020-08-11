@@ -17,7 +17,7 @@ import javax.swing.table.AbstractTableModel;
 public class PositionTableModel extends AbstractTableModel {
 
 		
-    private String[] columnNames = {"ID", "Symbol", "Date", "Position", "Price", "Covered","CDate", "CPrice", "BPrice" };
+    private String[] columnNames = {"ID", "Symbol", "Date", "Position", "Price", "Covered","CDate", "CPrice", "Spot Price", "P/L" };
     private List<OptLeg> data = new ArrayList<OptLeg>();
     private String strStrategyName;
 
@@ -51,6 +51,7 @@ public class PositionTableModel extends AbstractTableModel {
         case 6: return objOptLeg.getDateCoveredString();
         case 7: return objOptLeg.getCoverPrice();
         case 8: return objOptLeg.getHistPrice();
+        case 9: return objOptLeg.getPLSpot();
         default : return null;
       }
     }

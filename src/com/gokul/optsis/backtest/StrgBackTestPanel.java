@@ -258,14 +258,14 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
 
     private  XYDataset createDataset() {
         
-        List<Integer> listNet = objOptStrg.getNetPayOffData();
-        List<Integer> listCurrent = objOptStrg.getCurrentPayOffData();
+        List<Float> listNet = objOptStrg.getNetPayOffData();
+        List<Float> listCurrent = objOptStrg.getCurrentPayOffData();
         List<Float> listHistorical = backTestStrategy.getCurrentPayOffData();
 
         var seriesNet = new XYSeries("Net");
         int nUnderlyingPrice = objOptStrg.getChartStart();
 
-        for (Integer element : listNet) {
+        for (Float element : listNet) {
             seriesNet.add(nUnderlyingPrice, element.doubleValue());
             nUnderlyingPrice += 100;
         }
@@ -273,7 +273,7 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
         nUnderlyingPrice = objOptStrg.getChartStart();
         var seriesCurrent = new XYSeries("Current ");
 
-        for (Integer element : listCurrent) {
+        for (Float element : listCurrent) {
             seriesCurrent.add(nUnderlyingPrice, element.doubleValue());
             nUnderlyingPrice += 100;
         } 

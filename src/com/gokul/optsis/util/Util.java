@@ -320,7 +320,7 @@ public class Util {
         Connection connection = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        String strSQL =  "CREATE TABLE STRGTEST (id int auto_increment, name varchar2(20),dtcreated date default CURRENT_DATE, symbol varchar2(20), position boolean, price int, covered boolean, dtcovered date default CURRENT_DATE, coverprice int)";
+        String strSQL =  "CREATE TABLE STRGTEST (id int auto_increment, name varchar2(20),dtcreated date default CURRENT_DATE, symbol varchar2(20), position boolean, price float(2), covered boolean, dtcovered date default CURRENT_DATE, coverprice float)";
         
         try {
             Class.forName("org.h2.Driver");

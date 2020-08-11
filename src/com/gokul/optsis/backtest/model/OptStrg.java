@@ -107,17 +107,17 @@ public class OptStrg  {
         setPL();
     }         
 
-    public List<Integer> getCurrentPayOffData() {
+    public List<Float> getCurrentPayOffData() {
 
         boolean boolFirst = true;
         int nInnerCounter = 0;
-        List<Integer> listOLPayOff = new ArrayList<>();
+        List<Float> listOLPayOff = new ArrayList<>();
 
 
         for (OptLeg outerElement : currentLstOptLeg) {
 
                 nInnerCounter = 0;
-                for (Integer intElement : outerElement.getPayOffData()) {
+                for (Float intElement : outerElement.getPayOffData()) {
 
                         if (boolFirst == true) {
                                 listOLPayOff.add(intElement);
@@ -134,10 +134,10 @@ public class OptStrg  {
 
     }
     
-    public List<Integer> getNetPayOffData() {
+    public List<Float> getNetPayOffData() {
 
-        List<Integer> listNetPayOff = new ArrayList<>();
-        List<Integer> getCurrentPayOffData = getCurrentPayOffData();
+        List<Float> listNetPayOff = new ArrayList<>();
+        List<Float> getCurrentPayOffData = getCurrentPayOffData();
         
         getCurrentPayOffData.forEach(objPl -> {
             listNetPayOff.add(objPl + this.iPL);

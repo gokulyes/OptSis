@@ -31,10 +31,10 @@ public class OptLeg {
         private Date dtCreated;
 	private String strSymbol;				// Option Symbol
 	private boolean bPosition = true;		// Long: true, Short: false
-	private int nPrice;
+	private float nPrice;
 	private boolean bCovered = false;		// Position covered?
         private Date dtCovered;
-	private int iCoverPrice = 0;			// Position covered at price.
+	private float iCoverPrice = 0;			// Position covered at price.
         private int chartStart = 0;
         private int chartEnd = 0;
         private float histPrice =0;
@@ -126,7 +126,7 @@ public class OptLeg {
             
         }        
 
-	public int getPrice() {
+	public float getPrice() {
 		return nPrice;
 	}
 
@@ -146,13 +146,13 @@ public class OptLeg {
 		this.iCoverPrice = price;
 	}
 	
-	public int getCoverPrice() {
+	public float getCoverPrice() {
 		return this.iCoverPrice;
 	}
 	
 	
-	public List<Integer> getPayOffData() {
-            List<Integer> listOLPayOff = new ArrayList<>();
+	public List<Float> getPayOffData() {
+            List<Float> listOLPayOff = new ArrayList<>();
     //		String strType = this.strSymbol.substring(this.strSymbol.length() -2);
             int nStrike = strSymbol.length() > 12 ? Integer.parseInt(strSymbol.substring(0, strSymbol.length()-2).substring(12)) : 0;		
 
@@ -268,6 +268,14 @@ public class OptLeg {
 
     public void setHistPrice(float histPrice) {
         this.histPrice = histPrice;
+    }
+    
+    public float getPLSpot() {
+       if(getPosition()) {
+           return (getHistPrice()- getPrice());
+       } else {
+          return  (getPrice()- getHistPrice());
+       }
     }
 
 
