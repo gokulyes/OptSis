@@ -18,10 +18,12 @@ import com.gokul.optsis.model.OptionChainTableModel;
 import com.gokul.optsis.util.Util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -71,6 +73,8 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         dtPicker = new com.toedter.calendar.JDateChooser();
+        btnNext = new javax.swing.JButton();
+        btnPrevious = new javax.swing.JButton();
         pnlContent = new javax.swing.JPanel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(300, 0), new java.awt.Dimension(300, 0), new java.awt.Dimension(300, 32767));
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -106,10 +110,27 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
         });
 
         dtPicker.setDateFormatString("yyyy-MM-dd");
+        dtPicker.setPreferredSize(new java.awt.Dimension(111, 29));
         dtPicker.setDate(new Date());
         dtPicker.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 dtPickerPropertyChange(evt);
+            }
+        });
+
+        btnNext.setText("Next");
+        btnNext.setPreferredSize(new java.awt.Dimension(111, 29));
+        btnNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextActionPerformed(evt);
+            }
+        });
+
+        btnPrevious.setText("Previous");
+        btnPrevious.setPreferredSize(new java.awt.Dimension(111, 29));
+        btnPrevious.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPreviousActionPerformed(evt);
             }
         });
 
@@ -124,10 +145,14 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
                         .addComponent(jButton1)
                         .addGap(26, 26, 26)
                         .addComponent(jButton2)
-                        .addGap(126, 126, 126)
-                        .addComponent(dtPicker, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnPrevious, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35)
+                        .addComponent(dtPicker, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel1))
-                .addContainerGap(1320, Short.MAX_VALUE))
+                .addContainerGap(1142, Short.MAX_VALUE))
         );
         pnlHeaderLayout.setVerticalGroup(
             pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,8 +163,10 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
                 .addGroup(pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton1)
-                        .addComponent(jButton2))
-                    .addComponent(dtPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButton2)
+                        .addComponent(btnPrevious, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(dtPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(21, 21, 21))
         );
 
@@ -182,17 +209,38 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
 
     private void dtPickerPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dtPickerPropertyChange
         if ("date".equals(evt.getPropertyName())) {
-//            System.out.println(evt.getPropertyName()
-//                + ": " + (Date) evt.getNewValue());
+            System.out.println(evt.getPropertyName()
+                + ": " + (Date) evt.getNewValue());
             dtBackTest  = (Date) evt.getNewValue();
             showOptionChain();
             showBackTestSeries();
             showChart();
+            SwingUtilities.updateComponentTreeUI(this);
         }
     }//GEN-LAST:event_dtPickerPropertyChange
 
+    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+        Calendar c = Calendar.getInstance(); 
+        c.setTime(dtBackTest); 
+        c.add(Calendar.DATE, 1);
+        dtBackTest = c.getTime();  
+         System.out.println("before dtBackTest: " + dtBackTest.toString());
+        dtPicker.setDate(dtBackTest);
+       System.out.println("after dtBackTest: " + dtBackTest.toString());
+    }//GEN-LAST:event_btnNextActionPerformed
+
+    private void btnPreviousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviousActionPerformed
+        Calendar c = Calendar.getInstance(); 
+        c.setTime(dtBackTest); 
+        c.add(Calendar.DATE, -1);
+        dtBackTest = c.getTime();  
+        dtPicker.setDate(dtBackTest);      // TODO add your handling code here:
+    }//GEN-LAST:event_btnPreviousActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnNext;
+    private javax.swing.JButton btnPrevious;
     private com.toedter.calendar.JDateChooser dtPicker;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
@@ -314,8 +362,9 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
                     backTestStrategy.addRow(backTestLeg);
                     objOptStrg.setHistPrice(objOptLeg.getID(), backTestLeg.getPrice());
                 }
-
+                
             }
+            
 
     }
 }
