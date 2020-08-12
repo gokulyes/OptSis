@@ -92,8 +92,8 @@ public class PositionTableModel extends AbstractTableModel {
             } else {
                 row.setCovered(false);  
             }
-            fireTableCellUpdated(rowIndex, 5);
-            fireTableCellUpdated(rowIndex, columnIndex);
+            fireTableRowsUpdated(rowIndex, rowIndex);
+
         }
  
     }    

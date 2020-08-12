@@ -40,27 +40,6 @@ public class OptStrg  {
     }
     
      public List<OptLeg> getListOptLeg() {
-//        listOptLeg = new ArrayList<>();
-//        try {
-//            
-//            Date dt = new Date();
-//            OptLeg obj = new OptLeg();
-//            obj.setID(1);
-//            obj.setStrategyName("BackTest");
-//
-//            dt = new SimpleDateFormat("dd-MM-yyyy").parse("06-08-2020");
-//            obj.setDateCovered(dt);
-//            obj.setSymbol("NIFTY");
-//            obj.setPrice(100);
-//            obj.setPosition(false);
-//            obj.setCovered(false);
-//            obj.setDateCovered(dt);
-//            obj.setCoverPrice(1000);
-//            listOptLeg.add(obj);
-//            
-//        } catch (ParseException ex) {
-//            Logger.getLogger(OptStrg.class.getName()).log(Level.SEVERE, null, ex);
-//        }
         return listOptLeg;
     }   
 
@@ -105,7 +84,17 @@ public class OptStrg  {
         }
         this.listOptLeg = listOL;
         setPL();
-    }         
+    }  
+    
+    public OptLeg getOptLeg(int id) {
+       OptLeg optLeg =  new OptLeg();
+       for (OptLeg objOptLeg : listOptLeg) {
+            if(objOptLeg.getID() == id) {
+                optLeg = objOptLeg;
+            } 
+       } 
+       return optLeg;
+    }
 
     public List<Float> getCurrentPayOffData() {
 
@@ -186,6 +175,16 @@ public class OptStrg  {
             }
                 
         }
+    }
+    
+    public void updateCurrentList() {
+        currentLstOptLeg = new ArrayList<>();	
+        for (OptLeg objOptLeg : listOptLeg) { // For each OptLeg in the list
+            if(!objOptLeg.getCovered()) {
+                currentLstOptLeg.add(objOptLeg);
+            }
+        }
+        setPL();
     }
 
 

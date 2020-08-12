@@ -202,9 +202,10 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
 
             public void tableChanged(TableModelEvent e) {
                 if (e.getType() == TableModelEvent.UPDATE) {
-                    updateCoverPrice();
+                    int row =  e.getFirstRow();
+                    updateCoverPrice(row);
                 }
-                System.out.println(e);
+                //         System.out.println(e);
             }
         });
         tblPosition.setModel(positionTableModel);
@@ -395,8 +396,10 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
             
 
     }
-    private void updateCoverPrice() {
-        System.out.println("updateCoverPrice");
+    private void updateCoverPrice(int row) {
+        objOptStrg.updateCurrentList();
+        showChart();
+
     }
     
 }
