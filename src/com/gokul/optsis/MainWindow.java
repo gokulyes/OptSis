@@ -151,7 +151,7 @@ public class MainWindow extends javax.swing.JFrame {
         pnlShow = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1800, 765));
+        setPreferredSize(new java.awt.Dimension(1920, 1080));
 
         pnlMainHeader.setBackground(new java.awt.Color(129, 152, 48));
         pnlMainHeader.setPreferredSize(new java.awt.Dimension(800, 50));

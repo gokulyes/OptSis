@@ -16,14 +16,15 @@ import com.gokul.optsis.backtest.model.OptionChain;
 import com.gokul.optsis.backtest.model.OptionPrice;
 import com.gokul.optsis.model.OptionChainTableModel;
 import com.gokul.optsis.util.Util;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.awt.Color;
+import java.awt.Component;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableCellRenderer;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -78,7 +79,22 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
         pnlContent = new javax.swing.JPanel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(300, 0), new java.awt.Dimension(300, 0), new java.awt.Dimension(300, 32767));
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblPosition = new javax.swing.JTable();
+        tblPosition = new javax.swing.JTable(positionTableModel) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+                Component comp = super.prepareRenderer(renderer, row, col);
+                if (col == 9) {
+                    Float obj =(Float)positionTableModel.getValueAt(row, col);
+                    if(obj > 100 && col == 9) {
+                        comp.setBackground(new Color(129, 152, 48));
+                    }
+                } else {
+                    comp.setBackground(new Color(192, 204, 153));
+                }
+
+                return comp;
+            }
+        };
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(500, 0), new java.awt.Dimension(500, 0), new java.awt.Dimension(500, 32767));
         pnlChart = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -118,6 +134,8 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
             }
         });
 
+        btnNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_next_20px.png"))); // NOI18N
+        btnNext.setMnemonic('N');
         btnNext.setText("Next");
         btnNext.setPreferredSize(new java.awt.Dimension(111, 29));
         btnNext.addActionListener(new java.awt.event.ActionListener() {
@@ -126,6 +144,8 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
             }
         });
 
+        btnPrevious.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_previous_20px.png"))); // NOI18N
+        btnPrevious.setMnemonic('P');
         btnPrevious.setText("Previous");
         btnPrevious.setPreferredSize(new java.awt.Dimension(111, 29));
         btnPrevious.addActionListener(new java.awt.event.ActionListener() {
@@ -178,6 +198,15 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
         filler1.setBorder(new javax.swing.border.LineBorder(java.awt.SystemColor.activeCaption, 1, true));
         pnlContent.add(filler1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 530, 590));
 
+        tblPosition.getModel().addTableModelListener(new TableModelListener() {
+
+            public void tableChanged(TableModelEvent e) {
+                if (e.getType() == TableModelEvent.UPDATE) {
+                    updateCoverPrice();
+                }
+                System.out.println(e);
+            }
+        });
         tblPosition.setModel(positionTableModel);
         jScrollPane1.setViewportView(tblPosition);
 
@@ -209,8 +238,9 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
 
     private void dtPickerPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dtPickerPropertyChange
         if ("date".equals(evt.getPropertyName())) {
-            System.out.println(evt.getPropertyName()
-                + ": " + (Date) evt.getNewValue());
+//            System.out.println(evt.getPropertyName()
+//                + ": " + (Date) evt.getNewValue());
+            
             dtBackTest  = (Date) evt.getNewValue();
             showOptionChain();
             showBackTestSeries();
@@ -224,9 +254,7 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
         c.setTime(dtBackTest); 
         c.add(Calendar.DATE, 1);
         dtBackTest = c.getTime();  
-         System.out.println("before dtBackTest: " + dtBackTest.toString());
         dtPicker.setDate(dtBackTest);
-       System.out.println("after dtBackTest: " + dtBackTest.toString());
     }//GEN-LAST:event_btnNextActionPerformed
 
     private void btnPreviousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviousActionPerformed
@@ -367,4 +395,8 @@ public class StrgBackTestPanel extends javax.swing.JPanel {
             
 
     }
+    private void updateCoverPrice() {
+        System.out.println("updateCoverPrice");
+    }
+    
 }

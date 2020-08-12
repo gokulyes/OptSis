@@ -127,6 +127,12 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnNext">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/images/icons8_next_20px.png"/>
+            </Property>
+            <Property name="mnemonic" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="&apos;N&apos;" type="code"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Next"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[111, 29]"/>
@@ -138,6 +144,12 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnPrevious">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/images/icons8_previous_20px.png"/>
+            </Property>
+            <Property name="mnemonic" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="&apos;P&apos;" type="code"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Previous"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[111, 29]"/>
@@ -211,6 +223,10 @@
                   <Connection code="positionTableModel" type="code"/>
                 </Property>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(positionTableModel) {&#xa;    @Override&#xa;    public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {&#xa;        Component comp = super.prepareRenderer(renderer, row, col);&#xa;        if (col == 9) {&#xa;            Float obj =(Float)positionTableModel.getValueAt(row, col);&#xa;            if(obj &gt; 100 &amp;&amp; col == 9) {&#xa;                comp.setBackground(new Color(129, 152, 48));&#xa;            }&#xa;        } else {&#xa;            comp.setBackground(new Color(192, 204, 153));&#xa;        }&#xa;&#xa;        return comp;&#xa;    }&#xa;}"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="tblPosition.getModel().addTableModelListener(new TableModelListener() {&#xa;&#xa;      public void tableChanged(TableModelEvent e) {&#xa;        if (e.getType() == TableModelEvent.UPDATE) {&#xa;            updateCoverPrice();&#xa;        }&#xa;         System.out.println(e);&#xa;      }&#xa;    });"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>

@@ -392,10 +392,10 @@ public class Util {
                         objOptLeg.setDateCreated((rs.getDate(3)));
                         objOptLeg.setSymbol(rs.getString(4));
                         objOptLeg.setPosition(rs.getBoolean(5));
-                        objOptLeg.setPrice(rs.getInt(6));
+                        objOptLeg.setPrice(rs.getFloat(6));
                         objOptLeg.setCovered(rs.getBoolean(7));
                         objOptLeg.setDateCovered(rs.getDate(8));
-                        objOptLeg.setCoverPrice(rs.getInt(9));
+                        objOptLeg.setCoverPrice(rs.getFloat(9));
                         objOptStrg.addOptLeg(objOptLeg);
 //                      objOptStrg.setOptLeg(new OptLeg(rs.getInt(1), rs.getNString(2), rs.getString(3), rs.getBoolean(4), rs.getInt(5)));  
 

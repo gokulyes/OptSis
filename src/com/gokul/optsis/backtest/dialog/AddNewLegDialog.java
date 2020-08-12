@@ -197,7 +197,7 @@ public class AddNewLegDialog extends javax.swing.JDialog {
         objOptLeg.setStrategyName(txtStgName.getText());
         objOptLeg.setSymbol(txtStgSymbol.getText());
         objOptLeg.setPosition(rdbtnLong.isSelected());
-        objOptLeg.setPrice(Integer.parseInt(txtStgPrice.getText()));
+        objOptLeg.setPrice(Float.parseFloat(txtStgPrice.getText()));
 
         PreparedStatement stmt = null;
         int nColumnCnt = 4; //
@@ -221,7 +221,7 @@ public class AddNewLegDialog extends javax.swing.JDialog {
                         rowData[0] = txtStgName.getText();
                         rowData[1] = txtStgSymbol.getText();
                         rowData[2] = rdbtnLong.isSelected();
-                        rowData[3] =Integer.parseInt(txtStgPrice.getText());
+                        rowData[3] = Float.parseFloat(txtStgPrice.getText());
 
                         System.out.print(rowData.toString());
 

@@ -68,6 +68,35 @@ public class PositionTableModel extends AbstractTableModel {
         }
         return super.getColumnClass(columnIndex);
     }
+    
+    @Override
+    public boolean isCellEditable(int row, int col) {
+        switch (col) {
+            case 5:
+            case 7:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex)
+    {
+        OptLeg row = data.get(rowIndex);
+        if(columnIndex == 7) {
+            float coverprice = (Float)aValue;
+            row.setCoverPrice(coverprice);
+            if(coverprice > 0) {
+                row.setCovered(true);
+            } else {
+                row.setCovered(false);  
+            }
+            fireTableCellUpdated(rowIndex, 5);
+            fireTableCellUpdated(rowIndex, columnIndex);
+        }
+ 
+    }    
 
 
     public void addRowData(OptLeg objOptLeg){

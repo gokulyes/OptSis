@@ -130,7 +130,7 @@ public class OptLeg {
 		return nPrice;
 	}
 
-	public void setPrice(int nPrice) {
+	public void setPrice(float nPrice) {
 		this.nPrice = nPrice;
 	}
 	
@@ -142,7 +142,7 @@ public class OptLeg {
 		return this.bCovered;
 	}
 	
-	public void setCoverPrice(int price) {
+	public void setCoverPrice(float price) {
 		this.iCoverPrice = price;
 	}
 	
