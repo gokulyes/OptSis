@@ -106,7 +106,7 @@ public class StrgShowPanel extends javax.swing.JPanel {
         List<Integer> listNet = mainWindow.getCurrentStrategy().getNetPayOffData();
         List<Integer> listCurrent = mainWindow.getCurrentStrategy().getCurrentPayOffData();
 
-        var seriesNet = new XYSeries("Net");
+        XYSeries seriesNet = new XYSeries("Net");
         int nUnderlyingPrice = mainWindow.getCurrentStrategy().getChartStart();
 
         for (Integer element : listNet) {
@@ -115,14 +115,14 @@ public class StrgShowPanel extends javax.swing.JPanel {
         }
 
         nUnderlyingPrice = mainWindow.getCurrentStrategy().getChartStart();
-        var seriesCurrent = new XYSeries("Current ");
+        XYSeries seriesCurrent = new XYSeries("Current ");
 
         for (Integer element : listCurrent) {
             seriesCurrent.add(nUnderlyingPrice, element.doubleValue());
             nUnderlyingPrice += 100;
         }                
 
-        var dataset = new XYSeriesCollection();
+        XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(seriesCurrent);
         dataset.addSeries(seriesNet);
 

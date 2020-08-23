@@ -47,6 +47,7 @@ public class MainWindow extends javax.swing.JFrame {
         //If not exist create new tables.
         Util.createNewStrategyTable();
         Util.createNewStrategySettingTable();
+        Util.createNewStrgTestTable();
         
         //Get Strgsetting data
         strgSetting = Util.getStrgSettingData();

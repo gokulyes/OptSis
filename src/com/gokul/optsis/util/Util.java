@@ -302,7 +302,7 @@ public class Util {
 
      public static XYDataset createDataset(List<Integer> list) {
 
-            var series = new XYSeries("Net");
+            XYSeries series = new XYSeries("Net");
                     int nUnderlyingPrice = 8000;
 
                     for (Integer element : list) {
@@ -310,7 +310,7 @@ public class Util {
                             nUnderlyingPrice += 100;
                     }	        
 
-            var dataset = new XYSeriesCollection();
+            XYSeriesCollection dataset = new XYSeriesCollection();
             dataset.addSeries(series);
 
             return dataset;	 
